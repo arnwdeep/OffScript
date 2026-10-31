@@ -1327,5 +1327,47 @@ function escapeQuotes(str) {
   return str.replace(/'/g, "\\'").replace(/"/g, '&quot;');
 }
 
+// ==========================================
+// 10. LIVE DEMO VIDEO MODAL CONTROLS
+// ==========================================
+
+window.openDemoVideoModal = function() {
+  const modal = document.getElementById('demoVideoModal');
+  const player = document.getElementById('offscriptDemoPlayer');
+  if (modal) {
+    modal.classList.add('open');
+    modal.style.display = 'flex';
+  }
+  if (player) {
+    player.currentTime = 0;
+    player.play().catch(() => {});
+  }
+};
+
+window.closeDemoVideoModal = function() {
+  const modal = document.getElementById('demoVideoModal');
+  const player = document.getElementById('offscriptDemoPlayer');
+  if (modal) {
+    modal.classList.remove('open');
+    modal.style.display = 'none';
+  }
+  if (player) {
+    player.pause();
+  }
+};
+
+window.seekDemoVideo = function(seconds, chipEl) {
+  const player = document.getElementById('offscriptDemoPlayer');
+  if (player) {
+    player.currentTime = seconds;
+    player.play().catch(() => {});
+  }
+  if (chipEl) {
+    document.querySelectorAll('.demo-chapter-chip').forEach(c => c.classList.remove('active'));
+    chipEl.classList.add('active');
+  }
+};
+
 // Start
 document.addEventListener('DOMContentLoaded', init);
+

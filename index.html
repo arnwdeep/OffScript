@@ -53,6 +53,13 @@
         <img src="key_brand.png" alt="Brand Memory" class="keycap-img">
       </button>
     </div>
+
+    <!-- Floating Live Demo Video Launcher on Macro Homepage -->
+    <button class="btn-demo-video-homepage" id="btnOpenDemoVideoHomepage" onclick="window.openDemoVideoModal()" title="Watch Live Demo Video with Voiceover">
+      <span class="play-pulse">▶</span>
+      <span>Watch Live Demo Video</span>
+      <span class="demo-badge-pill">1080p • Voiceover</span>
+    </button>
   </div>
 
   <!-- Top App Header (Shown inside module interfaces) -->
@@ -85,8 +92,12 @@
       <span class="workspace-title-text" id="workspaceTitleText">Connect Accounts & Direct Link</span>
     </div>
 
-    <!-- Header Right: Connected Channel Status -->
+    <!-- Header Right: Connected Channel Status & Demo Video -->
     <div class="header-right">
+      <button class="btn-header-demo" id="btnHeaderDemoVideo" onclick="window.openDemoVideoModal()" title="Watch Live Demo Walkthrough (1080p Full HD with Voiceover)">
+        <span class="play-icon">▶</span>
+        <span>Live Demo Video</span>
+      </button>
       <div class="channel-status-pill" id="headerChannelBadge" style="display: none;">
         <span class="status-dot"></span>
         <span id="headerChannelName">Connected</span>
@@ -871,6 +882,41 @@ Watch the full breakdown on my channel. Drop your thoughts below!
       </div>
       <div class="modal-footer">
         <button class="btn btn-primary" id="btnDoneAutoPost">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal for Full HD Live Demo Walkthrough Video -->
+  <div class="modal-backdrop" id="demoVideoModal" style="display: none;" onclick="if(event.target===this) window.closeDemoVideoModal()">
+    <div class="modal-card demo-video-modal-card">
+      <div class="modal-header">
+        <div class="modal-header-title-group" style="display: flex; align-items: center; gap: 12px;">
+          <span class="demo-badge-1080p">1080p FULL HD</span>
+          <h3 class="modal-title">Off Script — Live Website & Feature Walkthrough Demo</h3>
+        </div>
+        <button class="modal-close" onclick="window.closeDemoVideoModal()" title="Close demo video">✕</button>
+      </div>
+      <div class="modal-body demo-video-modal-body" style="padding: 0;">
+        <div class="demo-video-container">
+          <video id="offscriptDemoPlayer" controls preload="auto" playsinline poster="demo_assets/thumb_0.jpg">
+            <source src="offscript_live_demo.mp4" type="video/mp4">
+            Your browser does not support HTML5 video.
+          </video>
+        </div>
+        <div class="demo-video-chapters-bar">
+          <div class="demo-chapters-header">
+            <span class="demo-chapters-label">Interactive Scene Jumps (Detailed Voiceover & Zoom Walkthrough):</span>
+          </div>
+          <div class="demo-chapters-scroll">
+            <button class="demo-chapter-chip active" onclick="window.seekDemoVideo(0, this)">00:00 Macro Keypad</button>
+            <button class="demo-chapter-chip" onclick="window.seekDemoVideo(14.62, this)">00:15 White Interface (@fireship)</button>
+            <button class="demo-chapter-chip" onclick="window.seekDemoVideo(37.11, this)">00:37 Videos Library (12 Videos)</button>
+            <button class="demo-chapter-chip" onclick="window.seekDemoVideo(53.82, this)">00:54 Audience Gaps & Opportunity</button>
+            <button class="demo-chapter-chip" onclick="window.seekDemoVideo(68.59, this)">01:09 Short Clip Studio & Auto-Post</button>
+            <button class="demo-chapter-chip" onclick="window.seekDemoVideo(88.87, this)">01:29 Brand Voice & Guardrails</button>
+            <button class="demo-chapter-chip" onclick="window.seekDemoVideo(100.25, this)">01:40 Outro & Macro Return</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
