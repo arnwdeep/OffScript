@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Off Script — Creator Memory & Short-Form Studio</title>
+  <meta name="description" content="Connect your YouTube or Instagram, index your published videos into searchable memory, detect content gaps, and turn moments into vertical clips.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/png" href="logo.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ==========================================
+       HOMEPAGE: GLOSSY MACRO KEYBOARD (PRIMARY MINIMALIST CENTERPIECE)
+       ========================================== -->
+  <div class="macro-homepage" id="macroHomepage">
+    <div class="macro-keypad-wrapper">
+      <!-- Base Keypad Image -->
+      <img src="Glossy Macro Keypad Interface.png" alt="Off Script Macro Keypad" class="macro-base-img" draggable="false">
+
+      <!-- Dynamic OLED Dot-Matrix Screen Overlay -->
+      <div class="macro-oled-screen" id="macroOledScreen">
+        <div class="oled-line-1" id="oledLine1">OFF SCRIPT</div>
+        <div class="oled-line-2"><span id="oledLine2">READY</span><span class="oled-cursor">_</span></div>
+      </div>
+
+      <!-- 5 Interactive Popping Keycaps -->
+      <!-- Key 1: Connect Accounts (Top-Left, White) -->
+      <button class="macro-key-btn" id="keyBtnConnect" data-target="connect" data-label="CONNECT ACCOUNTS" onclick="window.onMacroKeyClick('connect', this)" style="left: 18.02%; top: 37.49%; width: 20.87%; height: 18.53%;" title="Connect Accounts">
+        <img src="key_link.png" alt="Connect Accounts" class="keycap-img">
+      </button>
+
+      <!-- Key 2: Videos Library (Top-Middle, Peach) -->
+      <button class="macro-key-btn" id="keyBtnLibrary" data-target="library" data-label="VIDEOS LIBRARY" onclick="window.onMacroKeyClick('library', this)" style="left: 39.43%; top: 37.49%; width: 20.16%; height: 18.53%;" title="Videos Library">
+        <img src="key_youtube.png" alt="Videos Library" class="keycap-img">
+      </button>
+
+      <!-- Key 3: Audience & Gaps (Top-Right, Lavender) -->
+      <button class="macro-key-btn" id="keyBtnGaps" data-target="gaps" data-label="AUDIENCE GAPS" onclick="window.onMacroKeyClick('gaps', this)" style="left: 60.13%; top: 37.49%; width: 19.98%; height: 18.53%;" title="Audience & Gaps">
+        <img src="key_audience.png" alt="Audience & Gaps" class="keycap-img">
+      </button>
+
+      <!-- Key 4: Clip Studio (Bottom-Left, Yellow) -->
+      <button class="macro-key-btn" id="keyBtnStudio" data-target="studio" data-label="CLIP STUDIO" onclick="window.onMacroKeyClick('studio', this)" style="left: 21.95%; top: 56.88%; width: 26.41%; height: 18.67%;" title="Clip Studio">
+        <img src="key_clip.png" alt="Clip Studio" class="keycap-img">
+      </button>
+
+      <!-- Key 5: Brand Memory (Bottom-Right, Blue) -->
+      <button class="macro-key-btn" id="keyBtnBrand" data-target="brand" data-label="BRAND MEMORY" onclick="window.onMacroKeyClick('brand', this)" style="left: 49.60%; top: 56.88%; width: 26.58%; height: 18.67%;" title="Brand Memory">
+        <img src="key_brand.png" alt="Brand Memory" class="keycap-img">
+      </button>
+    </div>
+  </div>
+
+  <!-- Top App Header (Shown inside module interfaces) -->
+  <header class="app-header">
+    <div class="header-left">
+      <button class="btn-back-keypad" id="btnBackToKeypad" onclick="window.returnToKeypad()" title="Return to Macro Keypad (or press Esc)">
+        <span>⌨️</span>
+        <span>Keypad</span>
+      </button>
+      <div class="brand-mark">
+        <img src="logo.png" alt="Off Script Logo" class="brand-logo-img" width="34" height="34" style="width: 34px; height: 34px; max-width: 34px; max-height: 34px; object-fit: contain; border-radius: 6px; display: block;">
+      </div>
+      <div class="brand-text">
+        <span class="brand-name">Off Script</span>
+        <span class="brand-tag">Creator Memory & Studio</span>
+      </div>
+    </div>
+
+    <!-- Active Connected Channel Badge (dynamically populated) -->
+    <div class="channel-status-pill" id="headerChannelBadge" style="display: none;">
+      <span class="status-dot"></span>
+      <span id="headerChannelName">Connected</span>
+      <button class="btn-disconnect" id="btnDisconnectHeader" title="Disconnect channel">✕</button>
+    </div>
+
+    <!-- Minimal Navigation -->
+    <nav class="nav-tabs" id="navTabs">
+      <button class="nav-btn active" data-tab="connect">Connect Accounts</button>
+      <button class="nav-btn" data-tab="library">Videos Library <span class="badge" id="libraryCountBadge">0</span></button>
+      <button class="nav-btn" data-tab="gaps">Audience & Gaps <span class="badge alert" id="gapsCountBadge">0</span></button>
+      <button class="nav-btn" data-tab="studio">Clip Studio</button>
+      <button class="nav-btn" data-tab="brand">Brand Memory</button>
+    </nav>
+
+    <!-- Header Actions -->
+    <div class="header-right">
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode" title="Toggle theme">
+        <svg class="sun-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+        <svg class="moon-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="main-container">
+
+    <!-- ==========================================
+         TAB 1: CONNECT SOCIAL MEDIA ACCOUNTS (PRIMARY)
+         ========================================== -->
+    <section class="tab-pane active" id="tab-connect">
+      <div class="connect-hero">
+        <h1 class="page-title text-center">Connect Your Content</h1>
+        <p class="page-subtitle text-center">
+          Connect your YouTube channel or Instagram with your ID to sync your actual published videos.
+        </p>
+      </div>
+
+      <!-- Connection Cards Container -->
+      <div class="connect-options-grid">
+        
+        <!-- Option 1: YouTube Channel ID / Handle (Primary) -->
+        <div class="connect-card active-platform" id="cardYoutube">
+          <div class="platform-header">
+            <div class="platform-icon yt-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+            </div>
+            <div>
+              <h2 class="platform-title">YouTube Channel</h2>
+              <span class="platform-desc">Connect with your Channel ID or Handle</span>
+            </div>
+          </div>
+
+          <div class="connect-form">
+            <label for="inputYtIdentifier" class="form-label">Channel Handle or ID</label>
+            <div class="input-with-button">
+              <input type="text" id="inputYtIdentifier" class="form-input" placeholder="e.g. @mkbhd, @fireship, or Channel ID" value="@fireship">
+              <button class="btn btn-primary" id="btnConnectYt">
+                <span class="btn-text">Connect & Sync</span>
+                <span class="btn-spinner" style="display: none;">Syncing...</span>
+              </button>
+            </div>
+            <div class="quick-chips">
+              <span class="chips-label">Quick test:</span>
+              <button class="quick-chip" onclick="quickFillYt('@fireship')">@fireship</button>
+              <button class="quick-chip" onclick="quickFillYt('@mkbhd')">@mkbhd</button>
+              <button class="quick-chip" onclick="quickFillYt('@veritasium')">@veritasium</button>
+              <button class="quick-chip" onclick="quickFillYt('@hubermanlab')">@hubermanlab</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Option 2: Instagram Creator Account -->
+        <div class="connect-card" id="cardInstagram">
+          <div class="platform-header">
+            <div class="platform-icon ig-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+            </div>
+            <div>
+              <h2 class="platform-title">Instagram Account</h2>
+              <span class="platform-desc">Connect with your Instagram Username</span>
+            </div>
+          </div>
+
+          <div class="connect-form">
+            <label for="inputIgIdentifier" class="form-label">Instagram Username / Handle</label>
+            <div class="input-with-button">
+              <input type="text" id="inputIgIdentifier" class="form-input" placeholder="e.g. @creators or username">
+              <button class="btn btn-secondary" id="btnConnectIg">
+                <span class="btn-text">Connect ID</span>
+                <span class="btn-spinner" style="display: none;">Connecting...</span>
+              </button>
+            </div>
+            <div class="quick-chips">
+              <span class="chips-label">Or paste Reel:</span>
+              <span class="chip-hint">Supports direct Instagram Reel or Post links</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Option 3: Direct Video URL (Any specific video/short/reel) -->
+        <div class="connect-card" id="cardDirectUrl">
+          <div class="platform-header">
+            <div class="platform-icon link-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+            </div>
+            <div>
+              <h2 class="platform-title">Direct Video Link</h2>
+              <span class="platform-desc">Paste any specific YouTube video, short, or reel</span>
+            </div>
+          </div>
+
+          <div class="connect-form">
+            <label for="inputDirectUrl" class="form-label">Video URL</label>
+            <div class="input-with-button">
+              <input type="text" id="inputDirectUrl" class="form-input" placeholder="https://www.youtube.com/watch?v=...">
+              <button class="btn btn-secondary" id="btnFetchDirectUrl">
+                <span class="btn-text">Fetch Video</span>
+                <span class="btn-spinner" style="display: none;">Fetching...</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Option 4: Local Upload (Secondary Alternative) -->
+        <div class="connect-card secondary-card" id="cardUpload">
+          <div class="platform-header">
+            <div class="platform-icon file-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+            </div>
+            <div>
+              <h2 class="platform-title">Manual Upload (Alternative)</h2>
+              <span class="platform-desc">Upload a local video file or paste transcript</span>
+            </div>
+          </div>
+
+          <div class="connect-form">
+            <button class="btn btn-ghost btn-sm w-full" id="btnOpenManualUpload">
+              Upload local video or transcript →
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Connected Confirmation Banner (when active) -->
+      <div class="connected-banner" id="connectedBanner" style="display: none;">
+        <div class="connected-banner-left">
+          <div class="connected-avatar">✓</div>
+          <div>
+            <h3 class="connected-title" id="bannerChannelTitle">Connected Channel</h3>
+            <p class="connected-meta" id="bannerVideoCount">0 videos synced into searchable creator memory</p>
+          </div>
+        </div>
+        <div class="connected-banner-right">
+          <button class="btn btn-primary" onclick="switchTab('library')">Browse Actual Videos →</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         TAB 2: VIDEOS LIBRARY (ACTUAL VIDEOS ONLY)
+         ========================================== -->
+    <section class="tab-pane" id="tab-library">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Actual Published Videos</h1>
+          <p class="page-subtitle" id="librarySubtitle">Connect your YouTube or Instagram ID to load your real videos.</p>
+        </div>
+        <div class="header-action-group">
+          <button class="btn btn-secondary btn-sm" onclick="switchTab('connect')">Connect Another Account</button>
+        </div>
+      </div>
+
+      <!-- Search & Filters -->
+      <div class="search-section">
+        <div class="search-input-wrapper">
+          <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <input type="text" id="librarySearchInput" class="search-input" placeholder="Search across your actual video titles and topics...">
+          <button class="btn-clear" id="btnClearSearch" title="Clear search">✕</button>
+        </div>
+      </div>
+
+      <!-- Real Videos Grid & Detail Layout -->
+      <div class="real-library-layout">
+        
+        <!-- Left Column: Actual Videos Grid -->
+        <div class="videos-grid-column">
+          <div class="column-header">
+            <span class="column-title" id="videosListHeader">Synced Videos</span>
+            <span class="count-label" id="videosCountLabel">0 videos</span>
+          </div>
+
+          <div class="actual-videos-grid" id="actualVideosGrid">
+            <div class="empty-state-card">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="5"></rect><path d="m10 8 6 4-6 4V8z"></path></svg>
+              <h3>No videos loaded yet</h3>
+              <p>Connect your YouTube channel ID or Instagram above to view your actual videos.</p>
+              <button class="btn btn-primary btn-sm" onclick="switchTab('connect')">Connect with ID</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column: Selected Video Player & Transcript Inspector -->
+        <div class="video-viewer-column">
+          <div class="column-header">
+            <span class="column-title" id="viewerVideoTitle">Select a video to inspect</span>
+            <button class="btn btn-primary btn-xs" id="btnSendActiveToStudio" style="display: none;">
+              Open in Clip Studio ✂️
+            </button>
+          </div>
+
+          <div class="viewer-content" id="viewerContent">
+            <!-- Actual Video Player Embed Container -->
+            <div class="actual-player-container" id="actualPlayerContainer">
+              <div class="player-placeholder" id="playerPlaceholder">
+                <span>Select any actual video on the left to stream it here</span>
+              </div>
+            </div>
+
+            <!-- Video Metadata & Breakdown -->
+            <div class="video-info-strip" id="videoInfoStrip" style="display: none;">
+              <div>
+                <span class="badge" id="infoPlatformBadge">YouTube</span>
+                <span class="badge" id="infoDurationBadge">00:00</span>
+              </div>
+              <div class="info-actions">
+                <a id="infoExternalLink" href="#" target="_blank" class="btn btn-ghost btn-xs">Open on Platform ↗</a>
+              </div>
+            </div>
+
+            <!-- Timestamped Chapters & Memory Segments -->
+            <div class="segments-section" id="segmentsSection" style="display: none;">
+              <h4 class="segments-header">Indexed Chapters & Moments</h4>
+              <div class="segments-list" id="segmentsList">
+                <!-- Rendered dynamically -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ==========================================
+         TAB 3: AUDIENCE & GAPS (TAILORED TO REAL VIDEOS)
+         ========================================== -->
+    <section class="tab-pane" id="tab-gaps">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Audience Intelligence & Content Gaps</h1>
+          <p class="page-subtitle">Compares your audience demand with your actual video coverage to find content gaps.</p>
+        </div>
+      </div>
+
+      <div class="info-banner">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+        <span>
+          <strong>Opportunity Score = Audience Demand × (1 - Library Coverage)</strong>.
+          Derived directly from audience comments and unmet requests on your channel.
+        </span>
+      </div>
+
+      <div class="gaps-container" id="gapsContainer">
+        <div class="empty-state-card">
+          <p>Connect your YouTube or Instagram account first to analyze audience content gaps.</p>
+          <button class="btn btn-primary btn-sm" onclick="switchTab('connect')">Connect Channel</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         TAB 4: SHORT-FORM CLIP STUDIO (ACTUAL VIDEO)
+         ========================================== -->
+    <section class="tab-pane" id="tab-studio">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Short-Form Clip Studio</h1>
+          <p class="page-subtitle">Repurposing your actual video into vertical 9:16 short clips.</p>
+        </div>
+        <div class="header-action-group">
+          <button class="btn btn-primary" id="btnExportClip">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            Export Clip Package
+          </button>
+        </div>
+      </div>
+
+      <!-- Studio Layout: 9:16 Preview + Editor Controls -->
+      <div class="studio-layout">
+        <!-- 9:16 Mobile Phone Frame with Actual Video Stream -->
+        <div class="studio-preview-col">
+          <div class="phone-frame">
+            <div class="phone-notch"></div>
+            
+            <!-- Video Mock / Actual Embed Screen -->
+            <div class="video-mock-screen" id="studioMockScreen">
+              <!-- Actual Video Embed in 9:16 frame -->
+              <div class="studio-iframe-wrap" id="studioIframeWrap">
+                <div class="studio-empty-msg" id="studioEmptyMsg">Select an actual video from your library to start cutting clips.</div>
+              </div>
+
+              <!-- Synced Subtitle Overlay -->
+              <div class="subtitle-overlay" id="subtitleOverlay">
+                <span class="subtitle-text style-clean-bold" id="activeSubtitleText">"Key takeaway from your video..."</span>
+              </div>
+
+              <!-- Social UI Overlay -->
+              <div class="social-side-actions">
+                <div class="social-action-btn">❤️ <span>8.4k</span></div>
+                <div class="social-action-btn">💬 <span>312</span></div>
+                <div class="social-action-btn">↗️ <span>Share</span></div>
+              </div>
+
+              <div class="social-bottom-bar">
+                <div class="creator-tag" id="studioCreatorTag">@creator • Off Script</div>
+                <div class="hook-preview-caption" id="hookPreviewText">Hook suggestion preview...</div>
+              </div>
+            </div>
+
+            <!-- Trimming Controls -->
+            <div class="player-controls">
+              <div class="time-display">
+                <span id="playerCurrentTime">00:00</span> / <span id="playerDuration">00:35</span>
+              </div>
+              <div class="timeline-bar" id="timelineBar">
+                <div class="timeline-progress" id="timelineProgress"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Studio Controls & Inspector -->
+        <div class="studio-controls-col">
+          <!-- Clip Source Info -->
+          <div class="editor-section">
+            <div class="section-title">Actual Video Source & Trimming Range</div>
+            <div class="source-info-box">
+              <div class="source-header">
+                <span class="source-title" id="studioSourceTitle">No video loaded</span>
+                <span class="badge" id="studioPlatformBadge">YouTube</span>
+              </div>
+              <div class="timestamp-range-inputs">
+                <div class="input-group">
+                  <label for="inputStartTime">Start Timestamp</label>
+                  <input type="text" id="inputStartTime" value="00:00" class="time-input">
+                </div>
+                <div class="input-group">
+                  <label for="inputEndTime">End Timestamp</label>
+                  <input type="text" id="inputEndTime" value="00:35" class="time-input">
+                </div>
+                <div class="input-group">
+                  <label>Clip Duration</label>
+                  <div class="duration-display" id="studioDurationDisplay">35 seconds</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- AI Hook Suggestions -->
+          <div class="editor-section">
+            <div class="section-title">AI Hook Suggestions (Derived from Video Content)</div>
+            <div class="hooks-list" id="hooksContainer">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+
+          <!-- Subtitle Style Presets -->
+          <div class="editor-section">
+            <div class="section-title">Subtitle Display Preset</div>
+            <div class="subtitle-style-picker">
+              <button class="style-choice active" data-style="clean-bold">Clean Bold (Yellow Pop)</button>
+              <button class="style-choice" data-style="minimal-white">Minimal White Box</button>
+              <button class="style-choice" data-style="classic-sub">Classic Editorial</button>
+            </div>
+          </div>
+
+          <!-- Social Caption & Hashtags -->
+          <div class="editor-section">
+            <div class="section-title">Ready-to-Post Platform Caption</div>
+            <textarea id="captionTextArea" class="caption-editor" rows="4">Check out this highlight from my latest video! 
+
+Key takeaway: Solving real problems beats repetitive tutorials every single time.
+
+Watch the full breakdown on my channel. Drop your thoughts below!
+
+#creator #shorts #reels #contentcreation</textarea>
+            <div class="caption-stats">
+              <button class="btn btn-ghost btn-xs" id="btnCopyCaption">Copy Caption</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         TAB 5: BRAND PREFERENCES
+         ========================================== -->
+    <section class="tab-pane" id="tab-brand">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Brand Memory & Rules</h1>
+          <p class="page-subtitle">Configure tone preferences and guardrails for generating short-form clips.</p>
+        </div>
+        <div class="header-action-group">
+          <button class="btn btn-primary" id="btnSaveBrandPrefs">Save Preferences</button>
+        </div>
+      </div>
+
+      <div class="brand-grid">
+        <div class="panel">
+          <div class="panel-header">
+            <h2 class="panel-title">Creator Tone & Style</h2>
+          </div>
+          <div class="panel-body">
+            <div class="form-group">
+              <label for="brandToneSelect">Primary Voice Archetype</label>
+              <select id="brandToneSelect" class="form-select">
+                <option value="direct">Direct & Practitioner-Focused</option>
+                <option value="friendly">Encouraging & Mentorship</option>
+                <option value="academic">In-depth & Analytical</option>
+                <option value="casual">Casual & Conversational</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="brandRulesInput">Tone Guidelines</label>
+              <textarea id="brandRulesInput" class="form-textarea" rows="3">Always emphasize real-world practical utility. No clickbait or hyperbolic claims.</textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-header">
+            <h2 class="panel-title">Guardrails & Negative Words</h2>
+          </div>
+          <div class="panel-body">
+            <div class="form-group">
+              <label for="brandNegativeWords">Avoided Words (Comma-separated)</label>
+              <input type="text" id="brandNegativeWords" class="form-input" value="get rich quick, 10x engineer, master this in 24 hours">
+            </div>
+            <div class="form-group">
+              <label for="brandCtaInput">Default Call To Action</label>
+              <input type="text" id="brandCtaInput" class="form-input" value="What's your experience with this? Let me know in the comments.">
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Modal for Secondary Manual Upload -->
+  <div class="modal-backdrop" id="manualUploadModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title">Manual Video / Transcript Ingest</h3>
+        <button class="modal-close" id="btnCloseManualUpload">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="manualVideoTitle">Video Title</label>
+          <input type="text" id="manualVideoTitle" class="form-input" placeholder="e.g. My Custom Video Title">
+        </div>
+        <div class="form-group">
+          <label for="manualVideoUrl">Video Embed or File URL</label>
+          <input type="text" id="manualVideoUrl" class="form-input" placeholder="https://www.youtube.com/watch?v=...">
+        </div>
+        <div class="form-group">
+          <label for="manualTranscript">Transcript / Chapters (Optional)</label>
+          <textarea id="manualTranscript" class="form-textarea" rows="4" placeholder="[00:00] Introduction&#10;[01:30] Main point"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="btnCancelManualUpload">Cancel</button>
+        <button class="btn btn-primary" id="btnSubmitManualUpload">Add to Library</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <!-- Main JavaScript File -->
+  <script src="app.js"></script>
+</body>
+</html>
