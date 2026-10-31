@@ -129,8 +129,36 @@ const dom = {
 // 3. INITIALIZATION & NAVIGATION
 // ==========================================
 
+const INTERFACE_THEMES = {
+  connect: {
+    tag: 'WHITE INTERFACE',
+    title: 'Connect Accounts & Direct Link',
+    color: '#FFFFFF'
+  },
+  library: {
+    tag: 'PEACH INTERFACE',
+    title: 'Videos Library & Indexed Moments',
+    color: '#FF8C66'
+  },
+  gaps: {
+    tag: 'PURPLE INTERFACE',
+    title: 'Audience Demand & Content Gaps',
+    color: '#A78BFA'
+  },
+  studio: {
+    tag: 'YELLOW INTERFACE',
+    title: 'Short-Form Clip Studio',
+    color: '#FBBF24'
+  },
+  brand: {
+    tag: 'BLUE INTERFACE',
+    title: 'Brand Voice & Creator Memory',
+    color: '#3B82F6'
+  }
+};
+
 function init() {
-  applyTheme(APP_STATE.theme);
+  document.body.setAttribute('data-interface', 'keypad');
   setupMacroKeypad();
   bindEvents();
 
@@ -146,16 +174,6 @@ function init() {
   }
 }
 
-function applyTheme(theme) {
-  APP_STATE.theme = theme;
-  document.documentElement.setAttribute('data-theme', theme);
-  localStorage.setItem('offscript_theme', theme);
-}
-
-function toggleTheme() {
-  applyTheme(APP_STATE.theme === 'dark' ? 'light' : 'dark');
-}
-
 function showToast(msg) {
   dom.toast.textContent = msg;
   dom.toast.classList.add('show');
@@ -164,13 +182,21 @@ function showToast(msg) {
 
 function switchTab(tabId) {
   APP_STATE.activeTab = tabId;
-  document.querySelectorAll('.nav-btn').forEach(btn => {
-    btn.classList.toggle('active', btn.dataset.tab === tabId);
-  });
+  document.body.setAttribute('data-interface', tabId);
+
+  // Update header workspace indicator badge
+  const info = INTERFACE_THEMES[tabId] || INTERFACE_THEMES.connect;
+  const dot = document.getElementById('workspaceDot');
+  const tag = document.getElementById('workspaceThemeTag');
+  const title = document.getElementById('workspaceTitleText');
+  if (dot) dot.style.backgroundColor = info.color;
+  if (tag) tag.textContent = info.tag;
+  if (title) title.textContent = info.title;
+
   document.querySelectorAll('.tab-pane').forEach(pane => {
     pane.classList.toggle('active', pane.id === `tab-${tabId}`);
   });
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  window.scrollTo({ top: 0, behavior: 'instant' });
 }
 
 // ==========================================
@@ -229,6 +255,7 @@ window.onMacroKeyClick = function(target, btnElement) {
 };
 
 window.returnToKeypad = function() {
+  document.body.setAttribute('data-interface', 'keypad');
   const home = document.getElementById('macroHomepage');
   if (home) home.classList.remove('hidden');
   const oled = document.getElementById('oledLine2');
@@ -359,8 +386,7 @@ function onConnectionSuccess(isNew = true) {
   }
 
   if (isNew) {
-    showToast(`Connected ${creator.channel_title}! ${creator.video_count} videos synced.`);
-    setTimeout(() => switchTab('library'), 700);
+    showToast(`Connected ${creator.channel_title}! Return to Keypad to open Videos Library.`);
   }
 }
 
@@ -387,7 +413,6 @@ function disconnectAccount() {
 
   renderVideosGrid();
   renderGaps();
-  switchTab('connect');
   showToast('Account disconnected.');
 }
 
@@ -529,7 +554,7 @@ function renderVideoSegments(segments) {
         <span class="moment-time">[${s.time}]</span>
         <span>${escapeHtml(s.text)}</span>
       </div>
-      <span class="moment-btn">Cut Clip ✂️</span>
+      <span class="moment-btn">Select Moment</span>
     </div>
   `).join('');
 }
@@ -537,7 +562,7 @@ function renderVideoSegments(segments) {
 function loadMomentIntoStudio(timeStr, startSec, text) {
   if (!APP_STATE.selectedVideo) return;
   setupStudioForVideo(APP_STATE.selectedVideo, timeStr, startSec, text);
-  switchTab('studio');
+  showToast(`Moment [${timeStr}] selected. Return to Keyboard to open Clip Studio.`);
 }
 
 // ==========================================
@@ -676,7 +701,7 @@ function renderGaps() {
 
       <div style="display: flex; justify-content: flex-end;">
         <button class="btn btn-primary btn-sm" onclick="openGapInStudio('${gap.id}')">
-          Create Short-Form Clip for this Gap →
+          Target this Gap for Clip Studio →
         </button>
       </div>
     </div>
@@ -687,7 +712,7 @@ window.openGapInStudio = function(gapId) {
   if (APP_STATE.videos.length > 0) {
     const video = APP_STATE.videos[0];
     setupStudioForVideo(video, '00:00', 0, 'Highlight answering audience question on ' + (APP_STATE.gaps.find(g => g.id === gapId)?.title || 'gap'));
-    switchTab('studio');
+    showToast('Gap topic primed for Clip Studio. Return to Macro Keypad and press Yellow button.');
   }
 };
 
@@ -739,7 +764,7 @@ async function handleAutoGenerateClips() {
 
   const btn = document.getElementById('btnAutoGenerateClips');
   const countBadge = document.getElementById('autoClipsCountBadge');
-  if (btn) btn.innerHTML = '⚡ Generating Clips...';
+  if (btn) btn.innerHTML = 'Generating Clips...';
 
   try {
     const res = await fetch('/api/auto-clips', {
@@ -758,7 +783,7 @@ async function handleAutoGenerateClips() {
   } catch (e) {
     showToast('Auto-clip generation failed. Please retry.');
   } finally {
-    if (btn) btn.innerHTML = '⚡ Auto-Generate AI Clips';
+    if (btn) btn.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" style="vertical-align: -2px; margin-right: 6px;"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>Auto-Generate AI Clips`;
   }
 }
 
@@ -770,7 +795,10 @@ function renderAutoClipsDeck(clips) {
     <div class="auto-clip-card ${idx === 0 ? 'active-clip' : ''}" onclick="selectAutoClip(${JSON.stringify(c).replace(/"/g, '&quot;')}, this)">
       <div class="auto-clip-top-row">
         <span class="auto-clip-tag">${c.tag}</span>
-        <span class="auto-clip-score-pill">🔥 ${c.viral_score}% Viral Score</span>
+        <span class="auto-clip-score-pill">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" style="vertical-align: -1px; margin-right: 3px;"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
+          ${c.viral_score}% Viral Score
+        </span>
       </div>
       <h4 class="auto-clip-title">${escapeHtml(c.title)}</h4>
       <p class="auto-clip-hook">"${escapeHtml(c.hook)}"</p>
@@ -1016,58 +1044,86 @@ ${dom.captionTextArea.value}
 
 function bindEvents() {
   // Theme toggle
-  dom.themeToggle.addEventListener('click', toggleTheme);
+  if (dom.themeToggle) {
+    dom.themeToggle.addEventListener('click', () => {
+      // Per-interface theming is active; toggle is auxiliary
+    });
+  }
 
-  // Tabs
-  dom.navTabs.addEventListener('click', (e) => {
-    const btn = e.target.closest('.nav-btn');
-    if (!btn) return;
-    switchTab(btn.dataset.tab);
-  });
+  // Tabs (if present)
+  if (dom.navTabs) {
+    dom.navTabs.addEventListener('click', (e) => {
+      const btn = e.target.closest('.nav-btn');
+      if (!btn) return;
+      switchTab(btn.dataset.tab);
+    });
+  }
 
   // Disconnect header button
-  dom.btnDisconnectHeader.addEventListener('click', disconnectAccount);
+  if (dom.btnDisconnectHeader) {
+    dom.btnDisconnectHeader.addEventListener('click', disconnectAccount);
+  }
 
   // Connect Buttons
-  dom.btnConnectYt.addEventListener('click', () => {
-    handleConnect('youtube', dom.inputYtIdentifier.value);
-  });
-  dom.inputYtIdentifier.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') handleConnect('youtube', dom.inputYtIdentifier.value);
-  });
+  if (dom.btnConnectYt) {
+    dom.btnConnectYt.addEventListener('click', () => {
+      handleConnect('youtube', dom.inputYtIdentifier.value);
+    });
+  }
+  if (dom.inputYtIdentifier) {
+    dom.inputYtIdentifier.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') handleConnect('youtube', dom.inputYtIdentifier.value);
+    });
+  }
 
-  dom.btnConnectIg.addEventListener('click', () => {
-    handleConnect('instagram', dom.inputIgIdentifier.value);
-  });
-  dom.inputIgIdentifier.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') handleConnect('instagram', dom.inputIgIdentifier.value);
-  });
+  if (dom.btnConnectIg) {
+    dom.btnConnectIg.addEventListener('click', () => {
+      handleConnect('instagram', dom.inputIgIdentifier.value);
+    });
+  }
+  if (dom.inputIgIdentifier) {
+    dom.inputIgIdentifier.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') handleConnect('instagram', dom.inputIgIdentifier.value);
+    });
+  }
 
-  dom.btnFetchDirectUrl.addEventListener('click', () => {
-    handleConnect('youtube', dom.inputDirectUrl.value);
-  });
-  dom.inputDirectUrl.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') handleConnect('youtube', dom.inputDirectUrl.value);
-  });
+  if (dom.btnFetchDirectUrl) {
+    dom.btnFetchDirectUrl.addEventListener('click', () => {
+      handleConnect('youtube', dom.inputDirectUrl.value);
+    });
+  }
+  if (dom.inputDirectUrl) {
+    dom.inputDirectUrl.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') handleConnect('youtube', dom.inputDirectUrl.value);
+    });
+  }
 
   // Library search
-  dom.librarySearchInput.addEventListener('input', () => {
-    dom.btnClearSearch.classList.toggle('visible', dom.librarySearchInput.value.length > 0);
-    renderVideosGrid();
-  });
-  dom.btnClearSearch.addEventListener('click', () => {
-    dom.librarySearchInput.value = '';
-    dom.btnClearSearch.classList.remove('visible');
-    renderVideosGrid();
-  });
+  if (dom.librarySearchInput) {
+    dom.librarySearchInput.addEventListener('input', () => {
+      if (dom.btnClearSearch) {
+        dom.btnClearSearch.classList.toggle('visible', dom.librarySearchInput.value.length > 0);
+      }
+      renderVideosGrid();
+    });
+  }
+  if (dom.btnClearSearch) {
+    dom.btnClearSearch.addEventListener('click', () => {
+      if (dom.librarySearchInput) dom.librarySearchInput.value = '';
+      dom.btnClearSearch.classList.remove('visible');
+      renderVideosGrid();
+    });
+  }
 
   // Send active video to Studio
-  dom.btnSendActiveToStudio.addEventListener('click', () => {
-    if (APP_STATE.selectedVideo) {
-      setupStudioForVideo(APP_STATE.selectedVideo);
-      switchTab('studio');
-    }
-  });
+  if (dom.btnSendActiveToStudio) {
+    dom.btnSendActiveToStudio.addEventListener('click', () => {
+      if (APP_STATE.selectedVideo) {
+        setupStudioForVideo(APP_STATE.selectedVideo);
+        showToast('Video loaded into Studio memory. Return to Keypad and press Yellow button.');
+      }
+    });
+  }
 
   // Subtitle Style Choices
   dom.styleChoices.forEach(btn => {

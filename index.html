@@ -59,8 +59,14 @@
   <header class="app-header">
     <div class="header-left">
       <button class="btn-back-keypad" id="btnBackToKeypad" onclick="window.returnToKeypad()" title="Return to Macro Keypad (or press Esc)">
-        <span>⌨️</span>
-        <span>Keypad</span>
+        <svg class="header-icon-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+        <svg class="header-icon-pad" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="4" width="20" height="16" rx="3"></rect>
+          <path d="M6 8h.001M10 8h.001M14 8h.001M18 8h.001M6 12h.001M10 12h.001M14 12h.001M18 12h.001M7 16h10"></path>
+        </svg>
+        <span>Macro Keypad</span>
       </button>
       <div class="brand-mark">
         <img src="logo.png" alt="Off Script Logo" class="brand-logo-img" width="34" height="34" style="width: 34px; height: 34px; max-width: 34px; max-height: 34px; object-fit: contain; border-radius: 6px; display: block;">
@@ -71,28 +77,21 @@
       </div>
     </div>
 
-    <!-- Active Connected Channel Badge (dynamically populated) -->
-    <div class="channel-status-pill" id="headerChannelBadge" style="display: none;">
-      <span class="status-dot"></span>
-      <span id="headerChannelName">Connected</span>
-      <button class="btn-disconnect" id="btnDisconnectHeader" title="Disconnect channel">✕</button>
+    <!-- Active Isolated Workspace Badge (Center) -->
+    <div class="workspace-current-badge" id="workspaceCurrentBadge">
+      <span class="workspace-color-dot" id="workspaceDot"></span>
+      <span class="workspace-theme-tag" id="workspaceThemeTag">WHITE INTERFACE</span>
+      <span class="workspace-sep">•</span>
+      <span class="workspace-title-text" id="workspaceTitleText">Connect Accounts & Direct Link</span>
     </div>
 
-    <!-- Minimal Navigation -->
-    <nav class="nav-tabs" id="navTabs">
-      <button class="nav-btn active" data-tab="connect">Connect Accounts</button>
-      <button class="nav-btn" data-tab="library">Videos Library <span class="badge" id="libraryCountBadge">0</span></button>
-      <button class="nav-btn" data-tab="gaps">Audience & Gaps <span class="badge alert" id="gapsCountBadge">0</span></button>
-      <button class="nav-btn" data-tab="studio">Clip Studio</button>
-      <button class="nav-btn" data-tab="brand">Brand Memory</button>
-    </nav>
-
-    <!-- Header Actions -->
+    <!-- Header Right: Connected Channel Status -->
     <div class="header-right">
-      <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode" title="Toggle theme">
-        <svg class="sun-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
-        <svg class="moon-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
-      </button>
+      <div class="channel-status-pill" id="headerChannelBadge" style="display: none;">
+        <span class="status-dot"></span>
+        <span id="headerChannelName">Connected</span>
+        <button class="btn-disconnect" id="btnDisconnectHeader" title="Disconnect channel">✕</button>
+      </div>
     </div>
   </header>
 
@@ -109,7 +108,9 @@
            ========================================== -->
       <div class="direct-link-hero-card">
         <div class="hero-badge-pill">
-          <span class="spark-icon">✨</span>
+          <svg class="hero-spark-svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+            <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path>
+          </svg>
           <span>DIRECT VIDEO LINK & CLIP REPURPOSING</span>
         </div>
         <h1 class="direct-hero-big-title">Paste Any Video Link</h1>
@@ -123,7 +124,10 @@
           </div>
           <input type="text" id="inputDirectUrl" class="direct-hero-input" placeholder="Paste YouTube Video / Shorts or Instagram link (e.g. https://www.youtube.com/watch?v=...)">
           <button class="btn btn-primary btn-hero-fetch" id="btnFetchDirectUrl">
-            <span class="btn-text">Get Video & Cut Clips ✂️</span>
+            <span class="btn-text">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: -2px; margin-right: 6px;"><circle cx="6" cy="6" r="3"></circle><circle cx="6" cy="18" r="3"></circle><line x1="20" y1="4" x2="8.12" y2="15.88"></line><line x1="14.47" y1="14.48" x2="20" y2="20"></line><line x1="8.12" y1="8.12" x2="12" y2="12"></line></svg>
+              Get Video & Cut Clips
+            </span>
             <span class="btn-spinner" style="display: none;">Fetching...</span>
           </button>
         </div>
@@ -206,7 +210,7 @@
       </div>
 
       <!-- ==========================================
-           3. SOCIAL MEDIA HANDLES WITH SMALL ICONS (AT THE BOTTOM)
+           3. SOCIAL MEDIA HANDLES WITH CLEAN SVG ICONS (AT THE BOTTOM)
            ========================================== -->
       <div class="supported-handles-bottom-bar">
         <div class="handles-bar-header">
@@ -215,37 +219,37 @@
         </div>
         <div class="handles-icons-row">
           <div class="handle-item-pill">
-            <span class="handle-icon yt-color">▶</span>
+            <svg class="handle-icon yt-color" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
             <span class="handle-name">YouTube</span>
             <span class="handle-meta">@channel</span>
           </div>
           <div class="handle-item-pill">
-            <span class="handle-icon ig-color">📷</span>
+            <svg class="handle-icon ig-color" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
             <span class="handle-name">Instagram</span>
             <span class="handle-meta">@username</span>
           </div>
           <div class="handle-item-pill">
-            <span class="handle-icon tt-color">🎵</span>
+            <svg class="handle-icon tt-color" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.89 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.35 0 .68.07.99.19V9.43a6.34 6.34 0 0 0-.99-.08 6.35 6.35 0 0 0-6.34 6.34 6.35 6.35 0 0 0 6.34 6.35 6.35 6.35 0 0 0 6.34-6.35V9.4a8.16 8.16 0 0 0 4.76 1.52v-3.4a4.85 4.85 0 0 1-1-.83z"/></svg>
             <span class="handle-name">TikTok</span>
             <span class="handle-meta">@handle</span>
           </div>
           <div class="handle-item-pill">
-            <span class="handle-icon x-color">𝕏</span>
+            <svg class="handle-icon x-color" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
             <span class="handle-name">X (Twitter)</span>
             <span class="handle-meta">@handle</span>
           </div>
           <div class="handle-item-pill">
-            <span class="handle-icon li-color">💼</span>
+            <svg class="handle-icon li-color" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 8.76a1.45 1.45 0 0 0 0-2.9 1.45 1.45 0 0 0 0 2.9m1.4 9.74v-8.37H5.06v8.37h2.8z"/></svg>
             <span class="handle-name">LinkedIn</span>
             <span class="handle-meta">Creator Mode</span>
           </div>
           <div class="handle-item-pill">
-            <span class="handle-icon tw-color">👾</span>
+            <svg class="handle-icon tw-color" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M11.571 4.714h1.715v5.143H11.57zm4.715 0H18v5.143h-1.714zM6 0 1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714Z"/></svg>
             <span class="handle-name">Twitch</span>
             <span class="handle-meta">VOD Stream</span>
           </div>
           <div class="handle-item-pill">
-            <span class="handle-icon th-color">🧵</span>
+            <svg class="handle-icon th-color" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm3.8 11.8a4.1 4.1 0 0 1-3.8 2.2c-2.4 0-4.2-1.7-4.2-4.1s1.8-4.2 4.2-4.2a4.4 4.4 0 0 1 3.5 1.7"></path></svg>
             <span class="handle-name">Threads</span>
             <span class="handle-meta">@posts</span>
           </div>
@@ -257,7 +261,9 @@
            ========================================== -->
       <div class="manual-upload-bottom-banner">
         <div class="manual-banner-content">
-          <div class="manual-icon-box">📁</div>
+          <div class="manual-icon-box">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+          </div>
           <div class="manual-banner-text">
             <strong>Prefer manual file ingestion?</strong>
             <p>Upload a local MP4/MOV video file or paste raw transcripts directly into creator memory.</p>
@@ -271,14 +277,16 @@
       <!-- Connected Confirmation Banner (when active) -->
       <div class="connected-banner" id="connectedBanner" style="display: none;">
         <div class="connected-banner-left">
-          <div class="connected-avatar">✓</div>
+          <div class="connected-avatar">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          </div>
           <div>
             <h3 class="connected-title" id="bannerChannelTitle">Connected Channel</h3>
             <p class="connected-meta" id="bannerVideoCount">0 videos synced into searchable creator memory</p>
           </div>
         </div>
         <div class="connected-banner-right">
-          <button class="btn btn-primary" onclick="switchTab('library')">Browse Actual Videos →</button>
+          <button class="btn btn-primary" onclick="window.returnToKeypad()">← Return to Keyboard</button>
         </div>
       </div>
     </section>
@@ -293,7 +301,7 @@
           <p class="page-subtitle" id="librarySubtitle">Sync your YouTube or Instagram ID to load all your actual videos.</p>
         </div>
         <div class="header-action-group">
-          <button class="btn btn-secondary btn-sm" onclick="switchTab('connect')">Connect Direct Link ↗</button>
+          <button class="btn btn-secondary btn-sm" onclick="window.returnToKeypad()">← Return to Keypad</button>
         </div>
       </div>
 
@@ -311,19 +319,19 @@
 
         <div class="lib-sync-platforms-row">
           <button type="button" class="lib-platform-pill active" data-platform="youtube" id="libPlatformYt">
-            <span class="pill-icon yt-red">▶</span>
+            <svg class="pill-icon yt-red" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
             <span>YouTube Channel</span>
           </button>
           <button type="button" class="lib-platform-pill" data-platform="instagram" id="libPlatformIg">
-            <span class="pill-icon ig-purple">📷</span>
+            <svg class="pill-icon ig-purple" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
             <span>Instagram Profile</span>
           </button>
           <button type="button" class="lib-platform-pill" data-platform="tiktok" id="libPlatformTiktok">
-            <span class="pill-icon tt-pink">🎵</span>
+            <svg class="pill-icon tt-pink" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.89 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.35 0 .68.07.99.19V9.43a6.34 6.34 0 0 0-.99-.08 6.35 6.35 0 0 0-6.34 6.34 6.35 6.35 0 0 0 6.34-6.35V9.4a8.16 8.16 0 0 0 4.76 1.52v-3.4a4.85 4.85 0 0 1-1-.83z"/></svg>
             <span>TikTok</span>
           </button>
           <button type="button" class="lib-platform-pill" data-platform="twitter" id="libPlatformX">
-            <span class="pill-icon x-white">𝕏</span>
+            <svg class="pill-icon x-white" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
             <span>X (Twitter)</span>
           </button>
         </div>
@@ -369,7 +377,7 @@
               <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="5"></rect><path d="m10 8 6 4-6 4V8z"></path></svg>
               <h3>No videos loaded yet</h3>
               <p>Connect your YouTube channel ID or Instagram above to view your actual videos.</p>
-              <button class="btn btn-primary btn-sm" onclick="switchTab('connect')">Connect with ID</button>
+              <button class="btn btn-primary btn-sm" onclick="window.returnToKeypad()">← Return to Keyboard to Connect</button>
             </div>
           </div>
         </div>
@@ -378,9 +386,9 @@
         <div class="video-viewer-column">
           <div class="column-header">
             <span class="column-title" id="viewerVideoTitle">Select a video to inspect</span>
-            <button class="btn btn-primary btn-xs" id="btnSendActiveToStudio" style="display: none;">
-              Open in Clip Studio ✂️
-            </button>
+            <span class="badge badge-peach" id="btnSendActiveToStudio" style="display: none;">
+              Video Indexed in Memory
+            </span>
           </div>
 
           <div class="viewer-content" id="viewerContent">
@@ -424,6 +432,9 @@
           <h1 class="page-title">Audience Intelligence & Content Gaps</h1>
           <p class="page-subtitle">Compares your audience demand with your actual video coverage to find content gaps.</p>
         </div>
+        <div class="header-action-group">
+          <button class="btn btn-secondary btn-sm" onclick="window.returnToKeypad()">← Return to Keypad</button>
+        </div>
       </div>
 
       <div class="info-banner">
@@ -437,7 +448,7 @@
       <div class="gaps-container" id="gapsContainer">
         <div class="empty-state-card">
           <p>Connect your YouTube or Instagram account first to analyze audience content gaps.</p>
-          <button class="btn btn-primary btn-sm" onclick="switchTab('connect')">Connect Channel</button>
+          <button class="btn btn-primary btn-sm" onclick="window.returnToKeypad()">← Return to Keyboard to Connect</button>
         </div>
       </div>
     </section>
@@ -463,14 +474,18 @@
         </div>
 
         <div class="header-action-group">
+          <button class="btn btn-secondary btn-sm" onclick="window.returnToKeypad()">← Return to Keypad</button>
           <button class="btn btn-primary" id="btnAutoGenerateClips">
-            ⚡ Auto-Generate AI Clips
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" style="vertical-align: -2px; margin-right: 6px;"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+            Auto-Generate AI Clips
           </button>
           <button class="btn btn-secondary" id="btnDownloadClipPackage">
-            ⬇ Download Clip (MP4)
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: -2px; margin-right: 6px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            Download Clip (MP4)
           </button>
           <button class="btn btn-ghost" id="btnExportClip">
-            Export Package ↗
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: -2px; margin-right: 6px;"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path><polyline points="16 6 12 2 8 6"></polyline><line x1="12" y1="2" x2="12" y2="15"></line></svg>
+            Export Package
           </button>
         </div>
       </div>
@@ -503,7 +518,9 @@
               <!-- Actual Video Embed in Canvas -->
               <div class="studio-iframe-wrap" id="studioIframeWrap">
                 <div class="studio-empty-msg" id="studioEmptyMsg">
-                  <div class="empty-icon-pill">🎬</div>
+                  <div class="empty-icon-pill">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="3" ry="3"></rect><line x1="7" y1="2" x2="7" y2="22"></line><line x1="17" y1="2" x2="17" y2="22"></line><line x1="2" y1="12" x2="22" y2="12"></line><line x1="2" y1="7" x2="7" y2="7"></line><line x1="2" y1="17" x2="7" y2="17"></line><line x1="17" y1="17" x2="22" y2="17"></line><line x1="17" y1="7" x2="22" y2="7"></line></svg>
+                  </div>
                   <div class="empty-text-title">No Video Selected</div>
                   <p>Pick a video from your connected ID above or sync an account to start auto-clipping.</p>
                 </div>
@@ -556,16 +573,19 @@
           <div class="auto-clips-deck-card" id="autoClipsDeckCard">
             <div class="deck-header">
               <div class="deck-title-group">
-                <span class="spark-icon">⚡</span>
+                <svg class="spark-icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
                 <span class="deck-main-title">AI Auto-Generated Clips</span>
                 <span class="deck-count-badge" id="autoClipsCountBadge">Click 'Auto-Generate' to Create</span>
               </div>
-              <button class="btn btn-ghost btn-xs" id="btnRefreshAutoClips">Re-Generate ↻</button>
+              <button class="btn btn-ghost btn-xs" id="btnRefreshAutoClips">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align: -2px; margin-right: 4px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+                Re-Generate
+              </button>
             </div>
             
             <div class="auto-clips-grid" id="autoClipsGrid">
               <div class="empty-clips-prompt">
-                <span>Click <strong>⚡ Auto-Generate AI Clips</strong> above to automatically slice this video into 4 viral short-form clips.</span>
+                <span>Click <strong>Auto-Generate AI Clips</strong> above to automatically slice this video into 4 viral short-form clips.</span>
               </div>
             </div>
           </div>
@@ -621,7 +641,10 @@
                ========================================== -->
           <div class="editor-section auto-post-section">
             <div class="section-title">
-              <span>🚀 Automated Multi-Platform Auto-Post</span>
+              <span class="auto-post-title-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: -3px; margin-right: 6px;"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"></path><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"></path><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"></path><path d="M12 9V4s3.03.55 4 2c1.08 1.62 0 5 0 5"></path></svg>
+                Automated Multi-Platform Auto-Post
+              </span>
             </div>
             <p class="section-subtext">Off Script automatically renders, optimizes captions, and posts to all connected platforms:</p>
             
@@ -686,7 +709,10 @@ Watch the full breakdown on my channel. Drop your thoughts below!
             </div>
 
             <button class="btn btn-primary btn-auto-post-action w-full" id="btnExecuteAutoPost">
-              <span class="btn-text">🚀 Auto-Post to Selected Platforms</span>
+              <span class="btn-text">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: -2px; margin-right: 6px;"><path d="m22 2-7 20-4-9-9-4Z"></path><path d="M22 2 11 13"></path></svg>
+                Auto-Post to Selected Platforms
+              </span>
               <span class="btn-spinner" style="display: none;">Publishing Pipeline Running...</span>
             </button>
           </div>
@@ -704,7 +730,11 @@ Watch the full breakdown on my channel. Drop your thoughts below!
           <p class="page-subtitle">Configure tone preferences and guardrails for generating short-form clips.</p>
         </div>
         <div class="header-action-group">
-          <button class="btn btn-primary" id="btnSaveBrandPrefs">Save Preferences</button>
+          <button class="btn btn-secondary btn-sm" onclick="window.returnToKeypad()">← Return to Keypad</button>
+          <button class="btn btn-primary" id="btnSaveBrandPrefs">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align: -2px; margin-right: 6px;"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            Save Preferences
+          </button>
         </div>
       </div>
 
@@ -791,28 +821,36 @@ Watch the full breakdown on my channel. Drop your thoughts below!
       <div class="modal-body" id="autoPostBody">
         <div class="pipeline-steps-list" id="pipelineStepsList">
           <div class="pipeline-step-row active" id="pipeStep1">
-            <span class="pipe-icon">⏳</span>
+            <span class="pipe-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            </span>
             <div class="pipe-info">
               <strong>1. Video Extraction & 9:16 Vertical Cropping</strong>
               <span class="pipe-sub">Extracting high-bitrate stream & reframing focal area...</span>
             </div>
           </div>
           <div class="pipeline-step-row" id="pipeStep2">
-            <span class="pipe-icon">⚙️</span>
+            <span class="pipe-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+            </span>
             <div class="pipe-info">
               <strong>2. Dynamic Subtitle Burning & Hook Sync</strong>
               <span class="pipe-sub">Aligning animated typography with voice waveform...</span>
             </div>
           </div>
           <div class="pipeline-step-row" id="pipeStep3">
-            <span class="pipe-icon">🤖</span>
+            <span class="pipe-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"></rect><rect x="9" y="9" width="6" height="6"></rect><line x1="9" y1="1" x2="9" y2="4"></line><line x1="15" y1="1" x2="15" y2="4"></line><line x1="9" y1="20" x2="9" y2="23"></line><line x1="15" y1="20" x2="15" y2="23"></line><line x1="20" y1="9" x2="23" y2="9"></line><line x1="20" y1="14" x2="23" y2="14"></line><line x1="1" y1="9" x2="4" y2="9"></line><line x1="1" y1="14" x2="4" y2="14"></line></svg>
+            </span>
             <div class="pipe-info">
               <strong>3. Metadata & SEO Hashtag Optimization</strong>
               <span class="pipe-sub">Generating platform-specific tags for maximum reach...</span>
             </div>
           </div>
           <div class="pipeline-step-row" id="pipeStep4">
-            <span class="pipe-icon">🚀</span>
+            <span class="pipe-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"></path><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"></path><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"></path><path d="M12 9V4s3.03.55 4 2c1.08 1.62 0 5 0 5"></path></svg>
+            </span>
             <div class="pipe-info">
               <strong>4. API Dispatching to Destination Platforms</strong>
               <span class="pipe-sub">Publishing to YouTube Shorts, Instagram Reels, TikTok...</span>
@@ -821,7 +859,9 @@ Watch the full breakdown on my channel. Drop your thoughts below!
         </div>
 
         <div class="pipeline-success-box" id="pipelineSuccessBox" style="display: none;">
-          <div class="success-check-bubble">🎉</div>
+          <div class="success-check-bubble">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          </div>
           <h4 class="success-title">Auto-Posted Successfully!</h4>
           <p class="success-desc">Your vertical short clip has been rendered, formatted, and published across your selected channels.</p>
           <div class="dispatched-links-list" id="dispatchedLinksList">
