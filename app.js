@@ -9,7 +9,7 @@
 // ==========================================
 
 const APP_STATE = {
-  theme: localStorage.getItem('offscript_theme') || 'light',
+  theme: localStorage.getItem('offscript_theme') || 'dark',
   activeTab: 'connect',
   
   // Connected Creator Account
@@ -838,6 +838,42 @@ function bindEvents() {
     showToast('Manual video added.');
     switchTab('library');
   });
+
+  // Studio Aspect Ratio Switches
+  document.querySelectorAll('.aspect-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      document.querySelectorAll('.aspect-chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      const ratio = chip.dataset.ratio;
+      const screen = document.getElementById('studioMockScreen');
+      if (screen) {
+        screen.className = `video-monitor-screen ratio-${ratio}`;
+      }
+      showToast(`Canvas switched to ${chip.textContent.trim()}`);
+    });
+  });
+
+  // Timestamp inputs sync to deck readout
+  if (dom.inputStartTime) {
+    dom.inputStartTime.addEventListener('input', () => {
+      const inEl = document.getElementById('deckInPoint');
+      if (inEl) inEl.textContent = dom.inputStartTime.value || '00:00';
+    });
+  }
+  if (dom.inputEndTime) {
+    dom.inputEndTime.addEventListener('input', () => {
+      const outEl = document.getElementById('deckOutPoint');
+      if (outEl) outEl.textContent = dom.inputEndTime.value || '00:35';
+    });
+  }
+
+  // Brand prefs save
+  const btnSaveBrand = document.getElementById('btnSaveBrandPrefs');
+  if (btnSaveBrand) {
+    btnSaveBrand.addEventListener('click', () => {
+      showToast('Brand voice & guardrails saved to creator memory!');
+    });
+  }
 }
 
 // Helpers

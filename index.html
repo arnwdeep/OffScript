@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,7 +7,7 @@
   <meta name="description" content="Connect your YouTube or Instagram, index your published videos into searchable memory, detect content gaps, and turn moments into vertical clips.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="icon" type="image/png" href="logo.png">
   <link rel="stylesheet" href="style.css">
 </head>
@@ -362,16 +362,36 @@
 
       <!-- Studio Layout: 9:16 Preview + Editor Controls -->
       <div class="studio-layout">
-        <!-- 9:16 Mobile Phone Frame with Actual Video Stream -->
+        <!-- Laptop Studio Video Monitor / Workstation (No mobile phone screen) -->
         <div class="studio-preview-col">
-          <div class="phone-frame">
-            <div class="phone-notch"></div>
-            
-            <!-- Video Mock / Actual Embed Screen -->
-            <div class="video-mock-screen" id="studioMockScreen">
-              <!-- Actual Video Embed in 9:16 frame -->
+          <div class="laptop-studio-monitor">
+            <!-- Studio Monitor Header / Toolbar -->
+            <div class="studio-monitor-toolbar">
+              <div class="monitor-controls-left">
+                <span class="monitor-dot dot-coral"></span>
+                <span class="monitor-dot dot-yellow"></span>
+                <span class="monitor-dot dot-lime"></span>
+                <span class="monitor-title-badge">
+                  <span class="pulse-dot"></span>
+                  <span class="badge-label">STUDIO WORKSTATION • 1080p CANVAS</span>
+                </span>
+              </div>
+              <div class="aspect-ratio-tabs">
+                <button class="aspect-chip active" data-ratio="16-9">16:9 Widescreen</button>
+                <button class="aspect-chip" data-ratio="9-16">9:16 Vertical Cut</button>
+                <button class="aspect-chip" data-ratio="1-1">1:1 Square</button>
+              </div>
+            </div>
+
+            <!-- Video Player Canvas Container -->
+            <div class="video-monitor-screen" id="studioMockScreen">
+              <!-- Actual Video Embed in Canvas -->
               <div class="studio-iframe-wrap" id="studioIframeWrap">
-                <div class="studio-empty-msg" id="studioEmptyMsg">Select an actual video from your library to start cutting clips.</div>
+                <div class="studio-empty-msg" id="studioEmptyMsg">
+                  <div class="empty-icon-pill">🎬</div>
+                  <div class="empty-text-title">No Video Selected</div>
+                  <p>Choose an indexed video from your Videos Library to cut clips & test AI hooks.</p>
+                </div>
               </div>
 
               <!-- Synced Subtitle Overlay -->
@@ -379,26 +399,38 @@
                 <span class="subtitle-text style-clean-bold" id="activeSubtitleText">"Key takeaway from your video..."</span>
               </div>
 
-              <!-- Social UI Overlay -->
-              <div class="social-side-actions">
-                <div class="social-action-btn">❤️ <span>8.4k</span></div>
-                <div class="social-action-btn">💬 <span>312</span></div>
-                <div class="social-action-btn">↗️ <span>Share</span></div>
+              <!-- Top-Right Status Tag -->
+              <div class="studio-tag-overlay">
+                <span class="studio-status-pill">● REPURPOSING DECK</span>
               </div>
 
-              <div class="social-bottom-bar">
+              <!-- Bottom Bar / Creator Attribution Watermark -->
+              <div class="studio-bottom-deck">
                 <div class="creator-tag" id="studioCreatorTag">@creator • Off Script</div>
                 <div class="hook-preview-caption" id="hookPreviewText">Hook suggestion preview...</div>
               </div>
             </div>
 
-            <!-- Trimming Controls -->
-            <div class="player-controls">
-              <div class="time-display">
-                <span id="playerCurrentTime">00:00</span> / <span id="playerDuration">00:35</span>
+            <!-- Precision Pro Scrubbing Timeline Deck -->
+            <div class="studio-timeline-deck">
+              <div class="timeline-meta-bar">
+                <div class="deck-timer">
+                  <span id="playerCurrentTime" class="time-readout">00:00</span>
+                  <span class="time-sep">/</span>
+                  <span id="playerDuration" class="time-total">00:35</span>
+                </div>
+                <div class="timeline-waveform-bars">
+                  <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+                </div>
+                <div class="cut-range-badge">
+                  <span>CLIP RANGE: <strong id="deckInPoint">00:00</strong> → <strong id="deckOutPoint">00:35</strong></span>
+                </div>
               </div>
-              <div class="timeline-bar" id="timelineBar">
-                <div class="timeline-progress" id="timelineProgress"></div>
+
+              <div class="timeline-bar-wrapper" id="timelineBar">
+                <div class="timeline-track">
+                  <div class="timeline-progress" id="timelineProgress"></div>
+                </div>
               </div>
             </div>
           </div>
