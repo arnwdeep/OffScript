@@ -262,37 +262,44 @@ function setupMacroKeypad() {
   });
 }
 
-// Quick fill helper for testing
+// Quick fill helpers for testing
 window.quickFillYt = function(handle) {
-  dom.inputYtIdentifier.value = handle;
+  if (dom.inputYtIdentifier) dom.inputYtIdentifier.value = handle;
   handleConnect('youtube', handle);
+};
+
+window.quickFillIg = function(handle) {
+  if (dom.inputIgIdentifier) dom.inputIgIdentifier.value = handle;
+  handleConnect('instagram', handle);
 };
 
 // ==========================================
 // 4. API CONNECTION HANDLERS
 // ==========================================
 
-async function handleConnect(platform, identifier) {
+async function handleConnect(platform, identifier, callerBtn = null) {
   if (!identifier || !identifier.trim()) {
-    showToast('Please enter a valid channel ID or handle.');
+    showToast('Please enter a valid channel ID, handle, or direct video link.');
     return;
   }
 
   // Set loading state
-  let btn, textSpan, spinnerSpan;
-  if (platform === 'youtube') {
-    btn = dom.btnConnectYt;
-  } else if (platform === 'instagram') {
-    btn = dom.btnConnectIg;
-  } else {
-    btn = dom.btnFetchDirectUrl;
+  let btn = callerBtn;
+  if (!btn) {
+    if (platform === 'youtube') {
+      btn = dom.btnConnectYt;
+    } else if (platform === 'instagram') {
+      btn = dom.btnConnectIg;
+    } else {
+      btn = dom.btnFetchDirectUrl;
+    }
   }
 
-  textSpan = btn.querySelector('.btn-text');
-  spinnerSpan = btn.querySelector('.btn-spinner');
-  textSpan.style.display = 'none';
-  spinnerSpan.style.display = 'inline';
-  btn.disabled = true;
+  let textSpan = btn ? btn.querySelector('.btn-text') : null;
+  let spinnerSpan = btn ? btn.querySelector('.btn-spinner') : null;
+  if (textSpan) textSpan.style.display = 'none';
+  if (spinnerSpan) spinnerSpan.style.display = 'inline';
+  if (btn) btn.disabled = true;
 
   try {
     const res = await fetch('/api/connect', {
@@ -319,9 +326,9 @@ async function handleConnect(platform, identifier) {
   } catch (err) {
     showToast(`Connection failed: ${err.message}`);
   } finally {
-    textSpan.style.display = 'inline';
-    spinnerSpan.style.display = 'none';
-    btn.disabled = false;
+    if (textSpan) textSpan.style.display = 'inline';
+    if (spinnerSpan) spinnerSpan.style.display = 'none';
+    if (btn) btn.disabled = false;
   }
 }
 
@@ -344,6 +351,12 @@ function onConnectionSuccess(isNew = true) {
 
   // Render Videos
   renderVideosGrid();
+  populateStudioVideoPicker();
+
+  // If studio has no active video yet, load the first synced video
+  if (!APP_STATE.activeClip.video && APP_STATE.videos.length > 0) {
+    setupStudioForVideo(APP_STATE.videos[0]);
+  }
 
   if (isNew) {
     showToast(`Connected ${creator.channel_title}! ${creator.video_count} videos synced.`);
@@ -578,7 +591,13 @@ function setupStudioForVideo(video, startTime = '00:00', startSec = 0, segmentTe
   // Caption update
   dom.captionTextArea.value = `Highlight from "${video.title}"!\n\nKey takeaway: ${segmentText || 'Essential insights from my latest deep dive.'}\n\nWatch the complete breakdown on my channel (${video.url}).\n\nWhat are your thoughts on this? Let me know below!\n\n#${video.platform} #creator #shorts #reels`;
 
-  showToast('Actual video loaded into 9:16 Clip Studio.');
+  // Sync Video Picker select dropdown
+  const picker = document.getElementById('studioVideoPicker');
+  if (picker && video && video.id) {
+    picker.value = video.id;
+  }
+
+  showToast('Actual video loaded into Studio Workstation.');
 }
 
 function renderHooks() {
@@ -673,8 +692,280 @@ window.openGapInStudio = function(gapId) {
 };
 
 // ==========================================
-// 8. CLIP EXPORT & ACTIONS
+// 8. CLIP STUDIO PICKER, AUTO-CLIPS & AUTO-POST
 // ==========================================
+
+function populateStudioVideoPicker() {
+  const picker = document.getElementById('studioVideoPicker');
+  if (!picker) return;
+  if (!APP_STATE.videos || APP_STATE.videos.length === 0) {
+    picker.innerHTML = '<option value="">-- No videos synced yet --</option>';
+    return;
+  }
+  const channel = APP_STATE.connectedCreator ? APP_STATE.connectedCreator.channel_title : 'Connected Channel';
+  picker.innerHTML = `
+    <option value="">-- Synced from ${channel} (${APP_STATE.videos.length} videos) --</option>
+    ${APP_STATE.videos.map(v => `<option value="${v.id}" ${APP_STATE.activeClip.video && APP_STATE.activeClip.video.id === v.id ? 'selected' : ''}>${escapeHtml(v.title.substring(0, 50))} (${v.duration_str})</option>`).join('')}
+  `;
+}
+
+// Global quick fill url helper
+window.quickFillUrl = function(url) {
+  if (dom.inputDirectUrl) {
+    dom.inputDirectUrl.value = url;
+    handleConnect('youtube', url);
+  }
+};
+
+// Global library handle sync helper
+let currentLibPlatform = 'youtube';
+window.quickFillLibHandle = function(handle) {
+  const input = document.getElementById('libSocialHandleInput');
+  if (input) {
+    input.value = handle;
+    handleConnect(currentLibPlatform, handle);
+  }
+};
+
+async function handleAutoGenerateClips() {
+  const video = APP_STATE.activeClip.video || (APP_STATE.videos.length > 0 ? APP_STATE.videos[0] : null);
+  if (!video) {
+    showToast('Please pick or sync a video from your connected ID first.');
+    return;
+  }
+  if (!APP_STATE.activeClip.video) {
+    setupStudioForVideo(video);
+  }
+
+  const btn = document.getElementById('btnAutoGenerateClips');
+  const countBadge = document.getElementById('autoClipsCountBadge');
+  if (btn) btn.innerHTML = '⚡ Generating Clips...';
+
+  try {
+    const res = await fetch('/api/auto-clips', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        url: video.url,
+        video_title: video.title,
+        duration: video.duration || 240
+      })
+    });
+    const data = await res.json();
+    renderAutoClipsDeck(data.clips || []);
+    if (countBadge) countBadge.textContent = `${data.clips?.length || 4} clips ready`;
+    showToast('4 vertical short clips generated automatically!');
+  } catch (e) {
+    showToast('Auto-clip generation failed. Please retry.');
+  } finally {
+    if (btn) btn.innerHTML = '⚡ Auto-Generate AI Clips';
+  }
+}
+
+function renderAutoClipsDeck(clips) {
+  const grid = document.getElementById('autoClipsGrid');
+  if (!grid || !clips || clips.length === 0) return;
+
+  grid.innerHTML = clips.map((c, idx) => `
+    <div class="auto-clip-card ${idx === 0 ? 'active-clip' : ''}" onclick="selectAutoClip(${JSON.stringify(c).replace(/"/g, '&quot;')}, this)">
+      <div class="auto-clip-top-row">
+        <span class="auto-clip-tag">${c.tag}</span>
+        <span class="auto-clip-score-pill">🔥 ${c.viral_score}% Viral Score</span>
+      </div>
+      <h4 class="auto-clip-title">${escapeHtml(c.title)}</h4>
+      <p class="auto-clip-hook">"${escapeHtml(c.hook)}"</p>
+      <div class="auto-clip-footer">
+        <span>${c.start_time} → ${c.end_time}</span>
+        <span class="auto-clip-duration">${c.duration}s Cut</span>
+      </div>
+    </div>
+  `).join('');
+
+  // Automatically activate first clip
+  if (clips.length > 0) {
+    applyClipSettings(clips[0]);
+  }
+}
+
+window.selectAutoClip = function(clipData, element) {
+  document.querySelectorAll('.auto-clip-card').forEach(c => c.classList.remove('active-clip'));
+  if (element) element.classList.add('active-clip');
+  applyClipSettings(clipData);
+  showToast(`Loaded: ${clipData.title}`);
+};
+
+function applyClipSettings(clipData) {
+  APP_STATE.activeClip.startTime = clipData.start_time;
+  APP_STATE.activeClip.endTime = clipData.end_time;
+  APP_STATE.activeClip.startSec = clipData.start_sec;
+  APP_STATE.activeClip.endSec = clipData.end_sec;
+  APP_STATE.activeClip.durationSec = clipData.duration;
+
+  if (dom.inputStartTime) dom.inputStartTime.value = clipData.start_time;
+  if (dom.inputEndTime) dom.inputEndTime.value = clipData.end_time;
+  if (dom.studioDurationDisplay) dom.studioDurationDisplay.textContent = `${clipData.duration} seconds`;
+  if (dom.playerDuration) dom.playerDuration.textContent = clipData.end_time;
+
+  const inEl = document.getElementById('deckInPoint');
+  const outEl = document.getElementById('deckOutPoint');
+  if (inEl) inEl.textContent = clipData.start_time;
+  if (outEl) outEl.textContent = clipData.end_time;
+
+  if (dom.activeSubtitleText) dom.activeSubtitleText.textContent = clipData.subtitle;
+  if (dom.hookPreviewText) dom.hookPreviewText.textContent = clipData.hook;
+  if (dom.captionTextArea) dom.captionTextArea.value = clipData.caption;
+
+  const statusPill = document.getElementById('studioStatusPill');
+  if (statusPill) statusPill.textContent = `● ${clipData.title.toUpperCase()}`;
+
+  // Reload iframe with precise start/end seconds
+  const video = APP_STATE.activeClip.video;
+  if (video && video.platform === 'youtube' && video.id.length === 11) {
+    dom.studioIframeWrap.innerHTML = `
+      <iframe src="https://www.youtube-nocookie.com/embed/${video.id}?autoplay=1&mute=0&controls=0&loop=1&start=${clipData.start_sec}&end=${clipData.end_sec}" allow="autoplay; encrypted-media"></iframe>
+    `;
+  }
+}
+
+async function handleDownloadClipPackage() {
+  const clip = APP_STATE.activeClip;
+  if (!clip.video) {
+    showToast('Please pick an actual video first.');
+    return;
+  }
+
+  try {
+    const res = await fetch('/api/download-clip', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        url: clip.video.url,
+        start_time: clip.startTime,
+        end_time: clip.endTime,
+        title: clip.video.title
+      })
+    });
+    const data = await res.json();
+
+    const clipBundle = `
+==================================================
+OFF SCRIPT — AUTOMATED SHORT-FORM CLIP DOWNLOAD
+Title:        ${data.title}
+Format:       MP4 (1080x1920 9:16 Vertical)
+Bitrate:      ${data.audio_bitrate}
+Trim Range:   ${data.start_time} to ${data.end_time}
+Source URL:   ${data.url}
+Generated At: ${new Date().toISOString()}
+==================================================
+
+[SUBTITLES SRT TRACK]
+1
+00:${data.start_time},000 --> 00:${data.end_time},000
+${dom.activeSubtitleText ? dom.activeSubtitleText.textContent : 'Key takeaway from clip'}
+
+[READY-TO-POST PLATFORM CAPTION]
+${dom.captionTextArea ? dom.captionTextArea.value : ''}
+
+[FFMPEG COMMAND]
+ffmpeg -ss ${data.start_time} -to ${data.end_time} -i "source.mp4" -vf "crop=ih*(9/16):ih,scale=1080:1920" "${data.filename}"
+    `.trim();
+
+    const blob = new Blob([clipBundle], { type: 'text/plain' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = data.filename || `offscript_clip_${Date.now()}.mp4.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(a.href);
+
+    showToast(`Clip downloaded: ${data.start_time} to ${data.end_time}`);
+  } catch (e) {
+    showToast('Download error. Please retry.');
+  }
+}
+
+async function handleExecuteAutoPost() {
+  const clip = APP_STATE.activeClip;
+  if (!clip.video) {
+    showToast('Please pick a video before auto-posting.');
+    return;
+  }
+
+  const checkedBoxes = document.querySelectorAll('input[name="postPlatform"]:checked');
+  const platforms = Array.from(checkedBoxes).map(cb => cb.value);
+  if (platforms.length === 0) {
+    showToast('Please check at least one destination platform.');
+    return;
+  }
+
+  const scheduleEl = document.querySelector('input[name="scheduleMode"]:checked');
+  const schedule = scheduleEl ? scheduleEl.value : 'now';
+
+  const modal = document.getElementById('autoPostModal');
+  const step1 = document.getElementById('pipeStep1');
+  const step2 = document.getElementById('pipeStep2');
+  const step3 = document.getElementById('pipeStep3');
+  const step4 = document.getElementById('pipeStep4');
+  const stepsList = document.getElementById('pipelineStepsList');
+  const successBox = document.getElementById('pipelineSuccessBox');
+
+  if (modal) modal.classList.add('open');
+  if (stepsList) stepsList.style.display = 'flex';
+  if (successBox) successBox.style.display = 'none';
+
+  step1.className = 'pipeline-step-row active';
+  step2.className = 'pipeline-step-row';
+  step3.className = 'pipeline-step-row';
+  step4.className = 'pipeline-step-row';
+
+  await new Promise(r => setTimeout(r, 500));
+  step1.className = 'pipeline-step-row completed';
+  step2.className = 'pipeline-step-row active';
+
+  await new Promise(r => setTimeout(r, 500));
+  step2.className = 'pipeline-step-row completed';
+  step3.className = 'pipeline-step-row active';
+
+  await new Promise(r => setTimeout(r, 500));
+  step3.className = 'pipeline-step-row completed';
+  step4.className = 'pipeline-step-row active';
+
+  try {
+    const res = await fetch('/api/auto-post', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        video_id: clip.video.id,
+        clip_id: `clip_${Date.now()}`,
+        title: clip.video.title,
+        caption: dom.captionTextArea ? dom.captionTextArea.value : '',
+        platforms: platforms,
+        schedule: schedule
+      })
+    });
+    const data = await res.json();
+    step4.className = 'pipeline-step-row completed';
+
+    await new Promise(r => setTimeout(r, 400));
+    if (stepsList) stepsList.style.display = 'none';
+    if (successBox) {
+      successBox.style.display = 'block';
+      const linksList = document.getElementById('dispatchedLinksList');
+      if (linksList && data.dispatched) {
+        linksList.innerHTML = data.dispatched.map(d => `
+          <div class="dispatched-link-item">
+            <span class="link-platform-name">${d.platform.toUpperCase()}</span>
+            <span class="link-status-badge">✓ ${d.status.toUpperCase()} (${d.schedule_time})</span>
+          </div>
+        `).join('');
+      }
+    }
+    showToast(data.message);
+  } catch (e) {
+    showToast('Auto-post encountered a connection error.');
+  }
+}
 
 function handleExportClipPackage() {
   const clip = APP_STATE.activeClip;
@@ -873,6 +1164,99 @@ function bindEvents() {
     btnSaveBrand.addEventListener('click', () => {
       showToast('Brand voice & guardrails saved to creator memory!');
     });
+  }
+
+  // ==========================================
+  // Library Social ID Sync Bar Interaction
+  // ==========================================
+  const libPills = document.querySelectorAll('.lib-platform-pill');
+  const libInput = document.getElementById('libSocialHandleInput');
+  const btnLibSync = document.getElementById('btnLibSyncHandle');
+
+  libPills.forEach(pill => {
+    pill.addEventListener('click', () => {
+      libPills.forEach(p => p.classList.remove('active'));
+      pill.classList.add('active');
+      currentLibPlatform = pill.dataset.platform;
+      if (libInput) {
+        if (currentLibPlatform === 'youtube') {
+          libInput.placeholder = 'Enter YouTube channel handle or ID (e.g. @fireship, @mkbhd)';
+          libInput.value = '@fireship';
+        } else if (currentLibPlatform === 'instagram') {
+          libInput.placeholder = 'Enter Instagram handle or username (e.g. @creators, @nasa)';
+          libInput.value = '@creators';
+        } else if (currentLibPlatform === 'tiktok') {
+          libInput.placeholder = 'Enter TikTok handle or ID (e.g. @tiktokcreators)';
+          libInput.value = '@tiktokcreators';
+        } else if (currentLibPlatform === 'twitter') {
+          libInput.placeholder = 'Enter X / Twitter handle or ID (e.g. @mkbhd)';
+          libInput.value = '@mkbhd';
+        }
+      }
+    });
+  });
+
+  if (btnLibSync) {
+    btnLibSync.addEventListener('click', () => {
+      const val = libInput ? libInput.value : '';
+      handleConnect(currentLibPlatform, val, btnLibSync);
+    });
+  }
+  if (libInput) {
+    libInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        handleConnect(currentLibPlatform, libInput.value, btnLibSync);
+      }
+    });
+  }
+
+  // ==========================================
+  // Clip Studio Connected Video Picker
+  // ==========================================
+  const studioPicker = document.getElementById('studioVideoPicker');
+  if (studioPicker) {
+    studioPicker.addEventListener('change', (e) => {
+      const vidId = e.target.value;
+      if (!vidId) return;
+      const vid = APP_STATE.videos.find(v => v.id === vidId);
+      if (vid) {
+        setupStudioForVideo(vid);
+        showToast(`Loaded: ${vid.title.substring(0, 35)}...`);
+      }
+    });
+  }
+
+  // Auto-Generate AI Clips
+  const btnAutoGen = document.getElementById('btnAutoGenerateClips');
+  if (btnAutoGen) {
+    btnAutoGen.addEventListener('click', handleAutoGenerateClips);
+  }
+  const btnRefreshClips = document.getElementById('btnRefreshAutoClips');
+  if (btnRefreshClips) {
+    btnRefreshClips.addEventListener('click', handleAutoGenerateClips);
+  }
+
+  // Download Clip Button
+  const btnDownloadClip = document.getElementById('btnDownloadClipPackage');
+  if (btnDownloadClip) {
+    btnDownloadClip.addEventListener('click', handleDownloadClipPackage);
+  }
+
+  // Auto-Post Multi-Platform Engine
+  const btnAutoPost = document.getElementById('btnExecuteAutoPost');
+  if (btnAutoPost) {
+    btnAutoPost.addEventListener('click', handleExecuteAutoPost);
+  }
+
+  // Auto-Post Modal Controls
+  const autoPostModal = document.getElementById('autoPostModal');
+  const btnCloseAutoPost = document.getElementById('btnCloseAutoPostModal');
+  const btnDoneAutoPost = document.getElementById('btnDoneAutoPost');
+  if (btnCloseAutoPost && autoPostModal) {
+    btnCloseAutoPost.addEventListener('click', () => autoPostModal.classList.remove('open'));
+  }
+  if (btnDoneAutoPost && autoPostModal) {
+    btnDoneAutoPost.addEventListener('click', () => autoPostModal.classList.remove('open'));
   }
 }
 

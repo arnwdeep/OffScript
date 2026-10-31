@@ -103,32 +103,63 @@
          TAB 1: CONNECT SOCIAL MEDIA ACCOUNTS (PRIMARY)
          ========================================== -->
     <section class="tab-pane active" id="tab-connect">
-      <div class="connect-hero">
-        <h1 class="page-title text-center">Connect Your Content</h1>
-        <p class="page-subtitle text-center">
-          Connect your YouTube channel or Instagram with your ID to sync your actual published videos.
+      
+      <!-- ==========================================
+           1. BIG TEXT DIRECT VIDEO LINK (HERO CENTERPIECE)
+           ========================================== -->
+      <div class="direct-link-hero-card">
+        <div class="hero-badge-pill">
+          <span class="spark-icon">✨</span>
+          <span>DIRECT VIDEO LINK & CLIP REPURPOSING</span>
+        </div>
+        <h1 class="direct-hero-big-title">Paste Any Video Link</h1>
+        <p class="direct-hero-subtitle">
+          Instantly index content memory and cut vertical clips from any public YouTube video, Short, or Instagram Reel link.
         </p>
+
+        <div class="direct-hero-input-box">
+          <div class="direct-input-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+          </div>
+          <input type="text" id="inputDirectUrl" class="direct-hero-input" placeholder="Paste YouTube Video / Shorts or Instagram link (e.g. https://www.youtube.com/watch?v=...)">
+          <button class="btn btn-primary btn-hero-fetch" id="btnFetchDirectUrl">
+            <span class="btn-text">Get Video & Cut Clips ✂️</span>
+            <span class="btn-spinner" style="display: none;">Fetching...</span>
+          </button>
+        </div>
+
+        <div class="direct-hero-samples">
+          <span class="sample-label">Quick test links:</span>
+          <button class="sample-pill-btn" onclick="quickFillUrl('https://www.youtube.com/watch?v=kqtD5dpn9C8')">Python in 100 Seconds</button>
+          <button class="sample-pill-btn" onclick="quickFillUrl('https://www.youtube.com/watch?v=aircAruvnKk')">Neural Networks 3Blue1Brown</button>
+          <button class="sample-pill-btn" onclick="quickFillUrl('https://www.youtube.com/watch?v=QxMBHi_3Gkk')">MKBHD Studio Review</button>
+        </div>
       </div>
 
-      <!-- Connection Cards Container -->
+      <!-- ==========================================
+           2. CONNECT SOCIAL ACCOUNTS (YOUTUBE & INSTAGRAM)
+           ========================================== -->
+      <div class="section-divider-bar">
+        <span>OR CONNECT YOUR FULL CREATOR ACCOUNT BY ID</span>
+      </div>
+
       <div class="connect-options-grid">
-        
-        <!-- Option 1: YouTube Channel ID / Handle (Primary) -->
-        <div class="connect-card active-platform" id="cardYoutube">
+        <!-- YouTube Channel -->
+        <div class="connect-card" id="cardYoutube">
           <div class="platform-header">
             <div class="platform-icon yt-icon">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
             </div>
             <div>
               <h2 class="platform-title">YouTube Channel</h2>
-              <span class="platform-desc">Connect with your Channel ID or Handle</span>
+              <span class="platform-desc">Sync all published videos by Channel ID or Handle</span>
             </div>
           </div>
 
           <div class="connect-form">
             <label for="inputYtIdentifier" class="form-label">Channel Handle or ID</label>
             <div class="input-with-button">
-              <input type="text" id="inputYtIdentifier" class="form-input" placeholder="e.g. @mkbhd, @fireship, or Channel ID" value="@fireship">
+              <input type="text" id="inputYtIdentifier" class="form-input" placeholder="e.g. @fireship, @mkbhd, or Channel ID" value="@fireship">
               <button class="btn btn-primary" id="btnConnectYt">
                 <span class="btn-text">Connect & Sync</span>
                 <span class="btn-spinner" style="display: none;">Syncing...</span>
@@ -144,7 +175,7 @@
           </div>
         </div>
 
-        <!-- Option 2: Instagram Creator Account -->
+        <!-- Instagram Account -->
         <div class="connect-card" id="cardInstagram">
           <div class="platform-header">
             <div class="platform-icon ig-icon">
@@ -152,7 +183,7 @@
             </div>
             <div>
               <h2 class="platform-title">Instagram Account</h2>
-              <span class="platform-desc">Connect with your Instagram Username</span>
+              <span class="platform-desc">Sync your Reels and Posts with your Instagram handle</span>
             </div>
           </div>
 
@@ -166,55 +197,75 @@
               </button>
             </div>
             <div class="quick-chips">
-              <span class="chips-label">Or paste Reel:</span>
-              <span class="chip-hint">Supports direct Instagram Reel or Post links</span>
+              <span class="chips-label">Quick test:</span>
+              <button class="quick-chip" onclick="quickFillIg('@creators')">@creators</button>
+              <button class="quick-chip" onclick="quickFillIg('@nasa')">@nasa</button>
             </div>
           </div>
         </div>
+      </div>
 
-        <!-- Option 3: Direct Video URL (Any specific video/short/reel) -->
-        <div class="connect-card" id="cardDirectUrl">
-          <div class="platform-header">
-            <div class="platform-icon link-icon">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
-            </div>
-            <div>
-              <h2 class="platform-title">Direct Video Link</h2>
-              <span class="platform-desc">Paste any specific YouTube video, short, or reel</span>
-            </div>
+      <!-- ==========================================
+           3. SOCIAL MEDIA HANDLES WITH SMALL ICONS (AT THE BOTTOM)
+           ========================================== -->
+      <div class="supported-handles-bottom-bar">
+        <div class="handles-bar-header">
+          <span class="dot-indicator"></span>
+          <span class="handles-title">SUPPORTED CREATOR PLATFORMS & HANDLES</span>
+        </div>
+        <div class="handles-icons-row">
+          <div class="handle-item-pill">
+            <span class="handle-icon yt-color">▶</span>
+            <span class="handle-name">YouTube</span>
+            <span class="handle-meta">@channel</span>
           </div>
-
-          <div class="connect-form">
-            <label for="inputDirectUrl" class="form-label">Video URL</label>
-            <div class="input-with-button">
-              <input type="text" id="inputDirectUrl" class="form-input" placeholder="https://www.youtube.com/watch?v=...">
-              <button class="btn btn-secondary" id="btnFetchDirectUrl">
-                <span class="btn-text">Fetch Video</span>
-                <span class="btn-spinner" style="display: none;">Fetching...</span>
-              </button>
-            </div>
+          <div class="handle-item-pill">
+            <span class="handle-icon ig-color">📷</span>
+            <span class="handle-name">Instagram</span>
+            <span class="handle-meta">@username</span>
+          </div>
+          <div class="handle-item-pill">
+            <span class="handle-icon tt-color">🎵</span>
+            <span class="handle-name">TikTok</span>
+            <span class="handle-meta">@handle</span>
+          </div>
+          <div class="handle-item-pill">
+            <span class="handle-icon x-color">𝕏</span>
+            <span class="handle-name">X (Twitter)</span>
+            <span class="handle-meta">@handle</span>
+          </div>
+          <div class="handle-item-pill">
+            <span class="handle-icon li-color">💼</span>
+            <span class="handle-name">LinkedIn</span>
+            <span class="handle-meta">Creator Mode</span>
+          </div>
+          <div class="handle-item-pill">
+            <span class="handle-icon tw-color">👾</span>
+            <span class="handle-name">Twitch</span>
+            <span class="handle-meta">VOD Stream</span>
+          </div>
+          <div class="handle-item-pill">
+            <span class="handle-icon th-color">🧵</span>
+            <span class="handle-name">Threads</span>
+            <span class="handle-meta">@posts</span>
           </div>
         </div>
+      </div>
 
-        <!-- Option 4: Local Upload (Secondary Alternative) -->
-        <div class="connect-card secondary-card" id="cardUpload">
-          <div class="platform-header">
-            <div class="platform-icon file-icon">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-            </div>
-            <div>
-              <h2 class="platform-title">Manual Upload (Alternative)</h2>
-              <span class="platform-desc">Upload a local video file or paste transcript</span>
-            </div>
-          </div>
-
-          <div class="connect-form">
-            <button class="btn btn-ghost btn-sm w-full" id="btnOpenManualUpload">
-              Upload local video or transcript →
-            </button>
+      <!-- ==========================================
+           4. MANUAL UPLOAD OPTION (AT THE BOTTOM)
+           ========================================== -->
+      <div class="manual-upload-bottom-banner">
+        <div class="manual-banner-content">
+          <div class="manual-icon-box">📁</div>
+          <div class="manual-banner-text">
+            <strong>Prefer manual file ingestion?</strong>
+            <p>Upload a local MP4/MOV video file or paste raw transcripts directly into creator memory.</p>
           </div>
         </div>
-
+        <button class="btn btn-ghost btn-sm" id="btnOpenManualUpload">
+          Upload Local Video or Transcript Manually →
+        </button>
       </div>
 
       <!-- Connected Confirmation Banner (when active) -->
@@ -239,10 +290,58 @@
       <div class="page-header">
         <div>
           <h1 class="page-title">Actual Published Videos</h1>
-          <p class="page-subtitle" id="librarySubtitle">Connect your YouTube or Instagram ID to load your real videos.</p>
+          <p class="page-subtitle" id="librarySubtitle">Sync your YouTube or Instagram ID to load all your actual videos.</p>
         </div>
         <div class="header-action-group">
-          <button class="btn btn-secondary btn-sm" onclick="switchTab('connect')">Connect Another Account</button>
+          <button class="btn btn-secondary btn-sm" onclick="switchTab('connect')">Connect Direct Link ↗</button>
+        </div>
+      </div>
+
+      <!-- ==========================================
+           INTERACTIVE SOCIAL ID SYNC BAR RIGHT IN LIBRARY
+           ========================================== -->
+      <div class="library-sync-bar-card">
+        <div class="lib-sync-header">
+          <div class="lib-sync-title-wrap">
+            <span class="pulse-ring-dot"></span>
+            <span class="lib-sync-title">SYNC LIBRARY WITH SOCIAL ID</span>
+          </div>
+          <span class="lib-sync-desc">Click any platform below, enter your handle or ID, and load all your videos instantly:</span>
+        </div>
+
+        <div class="lib-sync-platforms-row">
+          <button type="button" class="lib-platform-pill active" data-platform="youtube" id="libPlatformYt">
+            <span class="pill-icon yt-red">▶</span>
+            <span>YouTube Channel</span>
+          </button>
+          <button type="button" class="lib-platform-pill" data-platform="instagram" id="libPlatformIg">
+            <span class="pill-icon ig-purple">📷</span>
+            <span>Instagram Profile</span>
+          </button>
+          <button type="button" class="lib-platform-pill" data-platform="tiktok" id="libPlatformTiktok">
+            <span class="pill-icon tt-pink">🎵</span>
+            <span>TikTok</span>
+          </button>
+          <button type="button" class="lib-platform-pill" data-platform="twitter" id="libPlatformX">
+            <span class="pill-icon x-white">𝕏</span>
+            <span>X (Twitter)</span>
+          </button>
+        </div>
+
+        <div class="lib-sync-input-row">
+          <input type="text" id="libSocialHandleInput" class="lib-sync-input" placeholder="Enter YouTube channel handle or ID (e.g. @fireship, @mkbhd)" value="@fireship">
+          <button class="btn btn-primary btn-sync-library" id="btnLibSyncHandle">
+            <span class="btn-text">Sync & Load Videos</span>
+            <span class="btn-spinner" style="display: none;">Syncing...</span>
+          </button>
+        </div>
+
+        <div class="lib-sync-chips">
+          <span class="chips-label">Quick sync:</span>
+          <button class="quick-chip" onclick="quickFillLibHandle('@fireship')">@fireship</button>
+          <button class="quick-chip" onclick="quickFillLibHandle('@mkbhd')">@mkbhd</button>
+          <button class="quick-chip" onclick="quickFillLibHandle('@veritasium')">@veritasium</button>
+          <button class="quick-chip" onclick="quickFillLibHandle('@hubermanlab')">@hubermanlab</button>
         </div>
       </div>
 
@@ -347,22 +446,38 @@
          TAB 4: SHORT-FORM CLIP STUDIO (ACTUAL VIDEO)
          ========================================== -->
     <section class="tab-pane" id="tab-studio">
-      <div class="page-header">
-        <div>
+      <div class="page-header studio-page-header">
+        <div class="studio-header-left">
           <h1 class="page-title">Short-Form Clip Studio</h1>
-          <p class="page-subtitle">Repurposing your actual video into vertical 9:16 short clips.</p>
+          <p class="page-subtitle">Pick any video from your connected ID, auto-slice into vertical clips, download, and auto-post.</p>
         </div>
+        
+        <!-- Video Picker from Connected ID / Library -->
+        <div class="studio-header-center">
+          <div class="video-picker-container">
+            <span class="picker-label">Connected Video:</span>
+            <select id="studioVideoPicker" class="studio-video-picker-select">
+              <option value="">-- Choose video from your synced ID --</option>
+            </select>
+          </div>
+        </div>
+
         <div class="header-action-group">
-          <button class="btn btn-primary" id="btnExportClip">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-            Export Clip Package
+          <button class="btn btn-primary" id="btnAutoGenerateClips">
+            ⚡ Auto-Generate AI Clips
+          </button>
+          <button class="btn btn-secondary" id="btnDownloadClipPackage">
+            ⬇ Download Clip (MP4)
+          </button>
+          <button class="btn btn-ghost" id="btnExportClip">
+            Export Package ↗
           </button>
         </div>
       </div>
 
-      <!-- Studio Layout: 9:16 Preview + Editor Controls -->
+      <!-- Studio Layout: Widescreen Monitor + Editor Controls -->
       <div class="studio-layout">
-        <!-- Laptop Studio Video Monitor / Workstation (No mobile phone screen) -->
+        <!-- Left: Laptop Studio Video Monitor & Auto-Clips Carousel -->
         <div class="studio-preview-col">
           <div class="laptop-studio-monitor">
             <!-- Studio Monitor Header / Toolbar -->
@@ -390,7 +505,7 @@
                 <div class="studio-empty-msg" id="studioEmptyMsg">
                   <div class="empty-icon-pill">🎬</div>
                   <div class="empty-text-title">No Video Selected</div>
-                  <p>Choose an indexed video from your Videos Library to cut clips & test AI hooks.</p>
+                  <p>Pick a video from your connected ID above or sync an account to start auto-clipping.</p>
                 </div>
               </div>
 
@@ -401,13 +516,13 @@
 
               <!-- Top-Right Status Tag -->
               <div class="studio-tag-overlay">
-                <span class="studio-status-pill">● REPURPOSING DECK</span>
+                <span class="studio-status-pill" id="studioStatusPill">● READY TO CLIP</span>
               </div>
 
               <!-- Bottom Bar / Creator Attribution Watermark -->
               <div class="studio-bottom-deck">
                 <div class="creator-tag" id="studioCreatorTag">@creator • Off Script</div>
-                <div class="hook-preview-caption" id="hookPreviewText">Hook suggestion preview...</div>
+                <div class="hook-preview-caption" id="hookPreviewText">Select or auto-generate clip...</div>
               </div>
             </div>
 
@@ -434,13 +549,33 @@
               </div>
             </div>
           </div>
+
+          <!-- ==========================================
+               AUTO-GENERATED AI CLIPS DECK (AUTOMATIC HIGHLIGHTS)
+               ========================================== -->
+          <div class="auto-clips-deck-card" id="autoClipsDeckCard">
+            <div class="deck-header">
+              <div class="deck-title-group">
+                <span class="spark-icon">⚡</span>
+                <span class="deck-main-title">AI Auto-Generated Clips</span>
+                <span class="deck-count-badge" id="autoClipsCountBadge">Click 'Auto-Generate' to Create</span>
+              </div>
+              <button class="btn btn-ghost btn-xs" id="btnRefreshAutoClips">Re-Generate ↻</button>
+            </div>
+            
+            <div class="auto-clips-grid" id="autoClipsGrid">
+              <div class="empty-clips-prompt">
+                <span>Click <strong>⚡ Auto-Generate AI Clips</strong> above to automatically slice this video into 4 viral short-form clips.</span>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <!-- Studio Controls & Inspector -->
+        <!-- Right: Studio Controls & Automated Auto-Post Engine -->
         <div class="studio-controls-col">
           <!-- Clip Source Info -->
           <div class="editor-section">
-            <div class="section-title">Actual Video Source & Trimming Range</div>
+            <div class="section-title">Active Video & Clip Timestamps</div>
             <div class="source-info-box">
               <div class="source-header">
                 <span class="source-title" id="studioSourceTitle">No video loaded</span>
@@ -463,14 +598,6 @@
             </div>
           </div>
 
-          <!-- AI Hook Suggestions -->
-          <div class="editor-section">
-            <div class="section-title">AI Hook Suggestions (Derived from Video Content)</div>
-            <div class="hooks-list" id="hooksContainer">
-              <!-- Rendered dynamically -->
-            </div>
-          </div>
-
           <!-- Subtitle Style Presets -->
           <div class="editor-section">
             <div class="section-title">Subtitle Display Preset</div>
@@ -481,19 +608,87 @@
             </div>
           </div>
 
-          <!-- Social Caption & Hashtags -->
+          <!-- AI Hook Suggestions -->
           <div class="editor-section">
-            <div class="section-title">Ready-to-Post Platform Caption</div>
-            <textarea id="captionTextArea" class="caption-editor" rows="4">Check out this highlight from my latest video! 
+            <div class="section-title">AI Hook Suggestions</div>
+            <div class="hooks-list" id="hooksContainer">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+
+          <!-- ==========================================
+               AUTOMATED MULTI-PLATFORM DISPATCH & POSTING ENGINE
+               ========================================== -->
+          <div class="editor-section auto-post-section">
+            <div class="section-title">
+              <span>🚀 Automated Multi-Platform Auto-Post</span>
+            </div>
+            <p class="section-subtext">Off Script automatically renders, optimizes captions, and posts to all connected platforms:</p>
+            
+            <div class="platforms-checkbox-grid">
+              <label class="platform-check-item">
+                <input type="checkbox" name="postPlatform" value="youtube" checked>
+                <span class="check-box-custom"></span>
+                <span class="platform-check-label"><strong class="yt-color">YouTube</strong> Shorts</span>
+              </label>
+              <label class="platform-check-item">
+                <input type="checkbox" name="postPlatform" value="instagram" checked>
+                <span class="check-box-custom"></span>
+                <span class="platform-check-label"><strong class="ig-color">Instagram</strong> Reels</span>
+              </label>
+              <label class="platform-check-item">
+                <input type="checkbox" name="postPlatform" value="tiktok" checked>
+                <span class="check-box-custom"></span>
+                <span class="platform-check-label"><strong class="tt-color">TikTok</strong> Video</span>
+              </label>
+              <label class="platform-check-item">
+                <input type="checkbox" name="postPlatform" value="twitter">
+                <span class="check-box-custom"></span>
+                <span class="platform-check-label"><strong class="x-color">X</strong> Clips</span>
+              </label>
+              <label class="platform-check-item">
+                <input type="checkbox" name="postPlatform" value="linkedin">
+                <span class="check-box-custom"></span>
+                <span class="platform-check-label"><strong class="li-color">LinkedIn</strong> Video</span>
+              </label>
+            </div>
+
+            <div class="schedule-options-row">
+              <label class="schedule-radio-item">
+                <input type="radio" name="scheduleMode" value="now" checked>
+                <span class="radio-custom"></span>
+                <span>Post Immediately</span>
+              </label>
+              <label class="schedule-radio-item">
+                <input type="radio" name="scheduleMode" value="peak">
+                <span class="radio-custom"></span>
+                <span>Peak Hour (7:00 PM EST)</span>
+              </label>
+              <label class="schedule-radio-item">
+                <input type="radio" name="scheduleMode" value="queue">
+                <span class="radio-custom"></span>
+                <span>Queue (+48h)</span>
+              </label>
+            </div>
+
+            <div class="caption-editor-wrapper">
+              <label class="form-label">Auto-Generated Caption & Hashtags</label>
+              <textarea id="captionTextArea" class="caption-editor" rows="4">Check out this highlight from my latest video! 
 
 Key takeaway: Solving real problems beats repetitive tutorials every single time.
 
 Watch the full breakdown on my channel. Drop your thoughts below!
 
 #creator #shorts #reels #contentcreation</textarea>
-            <div class="caption-stats">
-              <button class="btn btn-ghost btn-xs" id="btnCopyCaption">Copy Caption</button>
+              <div class="caption-stats">
+                <button class="btn btn-ghost btn-xs" id="btnCopyCaption">Copy Caption</button>
+              </div>
             </div>
+
+            <button class="btn btn-primary btn-auto-post-action w-full" id="btnExecuteAutoPost">
+              <span class="btn-text">🚀 Auto-Post to Selected Platforms</span>
+              <span class="btn-spinner" style="display: none;">Publishing Pipeline Running...</span>
+            </button>
           </div>
         </div>
       </div>
@@ -579,6 +774,63 @@ Watch the full breakdown on my channel. Drop your thoughts below!
       <div class="modal-footer">
         <button class="btn btn-secondary" id="btnCancelManualUpload">Cancel</button>
         <button class="btn btn-primary" id="btnSubmitManualUpload">Add to Library</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal for Automated Multi-Platform Publishing Pipeline -->
+  <div class="modal-backdrop" id="autoPostModal">
+    <div class="modal-card auto-post-modal-card">
+      <div class="modal-header">
+        <div class="modal-header-title-group">
+          <span class="pulse-ring-dot"></span>
+          <h3 class="modal-title" id="autoPostModalTitle">Auto-Posting Pipeline</h3>
+        </div>
+        <button class="modal-close" id="btnCloseAutoPostModal">✕</button>
+      </div>
+      <div class="modal-body" id="autoPostBody">
+        <div class="pipeline-steps-list" id="pipelineStepsList">
+          <div class="pipeline-step-row active" id="pipeStep1">
+            <span class="pipe-icon">⏳</span>
+            <div class="pipe-info">
+              <strong>1. Video Extraction & 9:16 Vertical Cropping</strong>
+              <span class="pipe-sub">Extracting high-bitrate stream & reframing focal area...</span>
+            </div>
+          </div>
+          <div class="pipeline-step-row" id="pipeStep2">
+            <span class="pipe-icon">⚙️</span>
+            <div class="pipe-info">
+              <strong>2. Dynamic Subtitle Burning & Hook Sync</strong>
+              <span class="pipe-sub">Aligning animated typography with voice waveform...</span>
+            </div>
+          </div>
+          <div class="pipeline-step-row" id="pipeStep3">
+            <span class="pipe-icon">🤖</span>
+            <div class="pipe-info">
+              <strong>3. Metadata & SEO Hashtag Optimization</strong>
+              <span class="pipe-sub">Generating platform-specific tags for maximum reach...</span>
+            </div>
+          </div>
+          <div class="pipeline-step-row" id="pipeStep4">
+            <span class="pipe-icon">🚀</span>
+            <div class="pipe-info">
+              <strong>4. API Dispatching to Destination Platforms</strong>
+              <span class="pipe-sub">Publishing to YouTube Shorts, Instagram Reels, TikTok...</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="pipeline-success-box" id="pipelineSuccessBox" style="display: none;">
+          <div class="success-check-bubble">🎉</div>
+          <h4 class="success-title">Auto-Posted Successfully!</h4>
+          <p class="success-desc">Your vertical short clip has been rendered, formatted, and published across your selected channels.</p>
+          <div class="dispatched-links-list" id="dispatchedLinksList">
+            <!-- Rendered dynamically -->
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" id="btnDoneAutoPost">Done</button>
       </div>
     </div>
   </div>
